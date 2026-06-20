@@ -167,9 +167,13 @@ This project is licensed under the MIT License.
 ### Contact Maintainers
 
 - **Sebin Mathew**
-  - 📧 Email: sebinmathew543@gmail.com
+  - 📧 Email: Sebinmathew543@gmail.com
+  - 💼 LinkedIn: https://www.linkedin.com/in/sebin-gg
+  - 🐙 GitHub: https://github.com/sebin-gg
 
 - **Lisha Jins**
   - 📧 Email: lishajins2006@gmail.com
+  - 💼 LinkedIn: https://www.linkedin.com/in/lisha-jins
+  - 🐙 GitHub: https://github.com/Lishajins
 
 
