@@ -140,6 +140,56 @@ Click on map markers to view pharmacy details, including contact info, opening h
 
 ---
 
+## ☁️ Cloud Deployment (Render)
+
+This project uses Render Blueprints (`render.yaml`) for Infrastructure-as-Code deployments. 
+
+1. Push your code to the `main` branch.
+2. In the [Render Dashboard](https://dashboard.render.com/), click **New + -> Blueprint** and connect this repository.
+3. Render will automatically detect the backend and frontend configurations.
+4. **CRITICAL:** When prompted, enter your MongoDB connection string in the `MONGO_URL` field. 
+5. **After backend deployment**, copy the backend URL, go to the frontend service -> Environment, and set `VITE_BACKEND_URL` to the live backend URL.
+
+## 🌍 Environment Variables
+
+Create `.env` files in both `backend` and `frontend` using these keys:
+
+### `backend/.env`
+| Variable | Description |
+|----------|-------------|
+| `PORT` | The port the Node.js server runs on (Default: 5000) |
+| `MONGO_URL` | Your MongoDB Atlas connection string |
+| `JWT_SECRET` | A secure, random string for signing authentication tokens |
+| `CORS_ORIGIN` | The URL allowed to make API requests (e.g., `http://localhost:5173` or `*`) |
+
+### `frontend/.env`
+| Variable | Description |
+|----------|-------------|
+| `VITE_BACKEND_URL` | The URL of your live backend API. If blank, it defaults to `http://localhost:5000` |
+
+## 🛠️ Common Troubleshooting
+
+- **❌ MongoDB Connection Error (`querySrv ECONNREFUSED _mongodb._tcp...`):** 
+  - **On Render:** Your MongoDB Atlas cluster is blocking Render's IP. Go to MongoDB Atlas -> Security -> Network Access and add `0.0.0.0/0` (Allow Access From Anywhere).
+  - **Local Machine:** Your ISP or router is blocking the `mongodb+srv` DNS lookup. Change your computer's DNS to `8.8.8.8` (Google) or use a standard `mongodb://` connection string.
+- **❌ Frontend Build Fails Locally:**
+  - Make sure you approve Vite/esbuild to run by executing `pnpm approve-builds` in the frontend directory.
+
+## 🔌 Core API Endpoints
+
+### Authentication
+- `POST /api/pharmacy/signup` - Register a new pharmacy
+- `POST /api/pharmacy/login` - Authenticate and receive a JWT
+
+### Medicines & Stock
+- `GET /api/drugs?name=X` - Search for a medicine and see all pharmacies stocking it
+- `POST /api/pharmacy/stock` - Add or update stock for a specific medicine
+- `GET /api/pharmacy/stock?pharmacy_id=X` - View all stock for a pharmacy
+- `PATCH /api/pharmacy/stock` - Modify stock quantities or pricing
+- `DELETE /api/pharmacy/stock` - Remove a medicine from inventory
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please follow these steps:
