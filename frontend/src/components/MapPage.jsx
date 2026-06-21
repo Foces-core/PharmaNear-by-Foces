@@ -42,17 +42,7 @@ const pharmacyIcon = new L.Icon({
     shadowSize: [41, 41],
 });
 
-function PharmacyFilter({ pharmacies, setVisiblePharmacies }) {
-    useMapEvents({
-        moveend: (e) => {
-            const map = e.target;
-            const bounds = map.getBounds();
-            const visible = pharmacies.filter((p) => bounds.contains([p.lat, p.lng]));
-            setVisiblePharmacies(visible);
-        },
-    });
-    return null;
-}
+// Removed PharmacyFilter to keep list stable
 function Routing({ userLocation, selectedPharmacy }) {
   const map = useMapEvents({});
 
@@ -124,7 +114,6 @@ export default function MapPage() {
 
     const [userLocation, setUserLocation] = useState(initialLocation);
     const [pharmacies, setPharmacies] = useState([]);
-    const [visiblePharmacies, setVisiblePharmacies] = useState([]);
 
     useEffect(() => {
         if (medicineData?.stocks?.length > 0) {
@@ -166,18 +155,15 @@ export default function MapPage() {
 
                     const validPharmacies = pharmacyList.filter(p => p !== null);
                     setPharmacies(validPharmacies.length ? validPharmacies : fallbackPharmacies);
-                    setVisiblePharmacies(validPharmacies.length ? validPharmacies : fallbackPharmacies);
                 } catch (error) {
                     console.error("Error processing pharmacy data:", error);
                     setPharmacies(fallbackPharmacies);
-                    setVisiblePharmacies(fallbackPharmacies);
                 }
             };
 
             fetchPharmacyDetails();
         } else {
             setPharmacies(fallbackPharmacies);
-            setVisiblePharmacies(fallbackPharmacies);
         }
     }, [medicineData, userLocation.lat, userLocation.lng]);
 
@@ -212,8 +198,8 @@ export default function MapPage() {
 
       {/* Scrollable container for pharmacy cards */}
       <div className="pharmacy-list-scroll">
-        {visiblePharmacies.length > 0 ? (
-          visiblePharmacies.map((pharmacy) => (
+        {pharmacies.length > 0 ? (
+          pharmacies.map((pharmacy) => (
             <div key={pharmacy.id} className="pharmacy-card">
               <div className="pharmacy-info">
                 <h3>{pharmacy.name}</h3>
@@ -293,8 +279,7 @@ export default function MapPage() {
                                 </Marker>
                             ))}
 
-                            {/* ✅ Pharmacy Filter */}
-                            <PharmacyFilter pharmacies={pharmacies} setVisiblePharmacies={setVisiblePharmacies} />
+                            {/* Removed PharmacyFilter so list is always visible */}
 
                             {/* ✅ Routing Component */}
                             <Routing userLocation={userLocation} selectedPharmacy={selectedPharmacy} />
