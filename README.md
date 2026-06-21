@@ -78,7 +78,7 @@ Follow these steps to set up and run the project locally.
 
 ### Prerequisites
 - **Node.js** (v18 or higher) - [Download here](https://nodejs.org/) *(New? Watch a [YouTube Guide](https://www.youtube.com/watch?v=EIJeLiaGfA0))*
-- **MongoDB** (local or cloud instance) - [MongoDB Atlas](https://www.mongodb.com/atlas) for cloud setup
+- **MongoDB** (Optional) - The app uses an in-memory DB locally, but you can use [MongoDB Atlas](https://www.mongodb.com/atlas) for production/cloud setups.
 - **Git** - [Download here](https://git-scm.com/)
 
 ### 1. Clone the Repository
@@ -87,19 +87,24 @@ git clone https://github.com/Foces-core/pharmanear.git
 cd pharmanear
 ```
 
-### 2. Environment Configuration
+### 2. Installation & Zero-Config Setup
 
-You can use the provided template to create your `.env` files. We have a root `.env.example` that shows the required variables.
+PharmaNear features a **zero-config local development environment**. If you don't provide a MongoDB connection string, the backend will automatically spin up an in-memory database (`mongodb-memory-server`) for instant testing!
 
-Copy the required variables and create `.env` files in both `frontend/` and `backend/` directories, or refer to their respective `.env-sample` files.
-
-> **Note:** Replace `your_super_secure_jwt_secret_key_here` with a strong, unique secret. For production, use environment variables provided by Render.
-
-### 3. Installation
-Install all dependencies for both frontend and backend using the root setup script:
+Install all dependencies using the root setup script:
 ```bash
 pnpm install:all
 ```
+
+> **⚠️ CRITICAL for pnpm v10+ users:** Newer versions of `pnpm` block package build scripts for security. You **must** approve them for the database and frontend to build:
+> 1. Run `pnpm approve-builds` in the `frontend` folder (Press `a` then `Enter`).
+> 2. Run `pnpm approve-builds` in the `backend` folder (Press `a` then `Enter`).
+
+### 3. Environment Variables (Optional for Local Dev)
+
+If you want to connect to a real MongoDB Atlas database, create `.env` files in the `frontend/` and `backend/` directories based on the `.env.example` templates. 
+
+Otherwise, just skip this step—the app works completely out of the box!
 
 ### 4. Backend Setup
 ```bash
