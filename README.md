@@ -199,6 +199,9 @@ Create `.env` files in both `backend` and `frontend` using these keys:
 - `POST /api/pharmacy/signup` - Register a new pharmacy
 - `POST /api/pharmacy/login` - Authenticate and receive a JWT
 
+### Health Monitoring
+- `GET /api/health` - Returns server health information including status, uptime, and timestamp.
+
 ### Medicines & Stock
 - `GET /api/drugs?name=X` - Search for a medicine and see all pharmacies stocking it
 - `POST /api/pharmacy/stock` - Add or update stock for a specific medicine
