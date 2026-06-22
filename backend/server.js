@@ -377,7 +377,10 @@ app.put("/api/pharmacy/profile", AuthMiddleware, async (req, res) => {
 // Add medicine stock for a pharmacy if medicine not exist it adds the medicine to the database and then adds to the stock
 app.post("/api/pharmacy/stock", AuthMiddleware, async (req, res) => {
   try {
-    const { pharmacy_id, medicine_name, quantity, price, strength } = req.body;
+    const { medicine_name, quantity, price, strength } = req.body;
+
+    // Use authenticated user's ID to prevent IDOR vulnerability
+    const pharmacy_id = req.user.id;
 
     // Validation
     if (!pharmacy_id)
@@ -527,8 +530,16 @@ app.get("/api/drugs", async (req, res) => {
 
 app.patch("/api/pharmacy/stock", AuthMiddleware, async (req, res) => {
   try {
-    const { pharmacy_id, medicine_name, quantity, price } = req.body;
+    const { medicine_name, quantity, price } = req.body;
     console.log("Request body:", req.body);
+
+    // Use authenticated user's ID to prevent IDOR vulnerability
+    const pharmacy_id = req.user.id;
+
+    // Block attempts to modify another pharmacy's stock
+    if (req.body.pharmacy_id && req.body.pharmacy_id !== req.user.id) {
+      return res.status(403).json({ message: "Forbidden: You can only modify your own pharmacy's stock" });
+    }
 
     if (!pharmacy_id || !medicine_name || !quantity || !price) {
       return res.status(400).json({ message: "Invalid stock data" });
@@ -566,7 +577,16 @@ app.patch("/api/pharmacy/stock", AuthMiddleware, async (req, res) => {
 
 app.delete("/api/pharmacy/stock", AuthMiddleware, async (req, res) => {
   try {
-    const { pharmacy_id, medicine_name } = req.body;
+    const { medicine_name } = req.body;
+
+    // Use authenticated user's ID to prevent IDOR vulnerability
+    const pharmacy_id = req.user.id;
+
+    // Block attempts to delete another pharmacy's stock
+    if (req.body.pharmacy_id && req.body.pharmacy_id !== req.user.id) {
+      return res.status(403).json({ message: "Forbidden: You can only modify your own pharmacy's stock" });
+    }
+
     if (!pharmacy_id || !medicine_name) {
       return res.status(400).json({ message: "Invalid stock data" });
     }
