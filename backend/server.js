@@ -112,6 +112,35 @@ app.get("/", (req, res) => {
   res.send("server check");
 });
 
+app.get("/api/health", (_req, res) => {
+  try {
+    const state = mongoose.connection.readyState;
+    /**
+     * 0 = disconnected
+     * 1 = connected
+     * 2 = connecting
+     * 3 = disconnecting
+     * 99 = uninitialized
+    */
+
+    res.status(200).json({
+      status: state === 1 ? "healthy" : "unhealthy",
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+      database: {
+        connected: state === 1,
+      },
+    })
+  } catch (error) {
+    console.error(err);
+    res.status(500).json({
+      status: "error",
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+    })
+  }
+})
+
 app.post("/api/pharmacy/signup", async (req, res) => {
   try {
     const { user_name, owner_name, city, phone_number, password } = req.body;

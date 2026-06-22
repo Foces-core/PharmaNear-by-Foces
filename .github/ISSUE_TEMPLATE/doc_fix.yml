@@ -7,6 +7,8 @@ body:
     attributes:
       value: |
         Thanks for helping improve our documentation!
+        
+        **⚠️ Note to Contributors:** Please do not work on this issue until it has been explicitly assigned to you by a maintainer.
   - type: textarea
     id: issue-description
     attributes:

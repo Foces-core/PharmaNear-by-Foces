@@ -9,6 +9,11 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 2. **Pharmacy:** Owner account (bcrypt password, location).
 3. **Stock:** Maps Pharmacy to Medicine (quantity, price).
 
+### Health Check Endpoint 
+
+- Added `GET /api/health`.
+- Returns JSON with status, uptime, and timestamp.
+
 ## 🗺️ Workflows
 - **Auth:** `SignupPage.jsx`/`LoginPage.jsx` -> `/api/pharmacy/*`. Returns JWT.
 - **Stock:** Pharmacy logs in -> adds stock. Backend adds to `Medicine` if missing, updates `Stock`.

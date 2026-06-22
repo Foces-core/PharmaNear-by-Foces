@@ -1,5 +1,7 @@
 # Contributing to PharmaNear
 
+**⚠️ IMPORTANT: You must ONLY work on an issue if it has been explicitly assigned to you.**
+
 First off, thank you for considering contributing to PharmaNear! It's people like you that make open-source a great community.
 
 ## 🛠️ Local Development Setup
