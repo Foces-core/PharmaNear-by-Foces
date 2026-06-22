@@ -23,7 +23,7 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - **Stock:** Pharmacy logs in -> adds stock. Backend adds to `Medicine` if missing, updates `Stock`.
 - **Search:** User searches drug -> Backend finds `Medicine` ID -> queries `Stock` -> Frontend plots on Leaflet map.
 
-### Loading State (June 2026)
+### Loading State
 
 - Added loading state to the search action.
 - Disabled duplicate submissions while requests are in progress.
