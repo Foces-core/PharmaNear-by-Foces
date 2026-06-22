@@ -217,13 +217,15 @@ Contributions are welcome! Please follow these steps:
 
 1. Fork the Project.
 
-2. Create your Feature Branch (`git checkout -b feature/feature-name`).
+2. **Important:** Check the issues tab and ONLY work on issues that have been assigned to you.
 
-3. Commit your Changes (`git commit -m 'feat: add feature name'`).
+3. Create your Feature Branch (`git checkout -b feature/feature-name`).
 
-4. Push to the Branch (`git push origin feature/feature-name`).
+4. Commit your Changes (`git commit -m 'feat: add feature name'`).
 
-5. Open a Pull Request targeting the `main` branch.
+5. Push to the Branch (`git push origin feature/feature-name`).
+
+6. Open a Pull Request targeting the `main` branch.
 
 > **🎉 Auto-Deployment:** Any changes merged or pushed directly to the `main` branch will be automatically detected by Render and deployed to the live site. You do not need to manually deploy!
 

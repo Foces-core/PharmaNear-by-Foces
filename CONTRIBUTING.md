@@ -49,6 +49,8 @@ If you only want to test a specific area:
 
 ## 📝 Issue Claiming Process
 
+**⚠️ IMPORTANT: You must ONLY work on an issue if it has been explicitly assigned to you.**
+
 Before starting work on any feature or bug fix:
 1. Browse the [Issues](https://github.com/Foces-core/pharmanear/issues) tab.
 2. If you find an issue you'd like to work on, leave a comment: *"I would like to work on this."*

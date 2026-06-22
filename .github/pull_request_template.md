@@ -13,6 +13,7 @@ Closes #
 ## ✅ Testing Checklist
 <!-- Please review and check the applicable items. -->
 - [ ] I have read the [CONTRIBUTING.md](../CONTRIBUTING.md) guide.
+- [ ] I am assigned to the linked issue(s).
 - [ ] I have tested these changes locally.
 - [ ] I have run `pnpm run test` and all tests pass.
 - [ ] I have added/updated necessary documentation.
