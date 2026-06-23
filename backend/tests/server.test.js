@@ -1,6 +1,7 @@
 import request from "supertest";
 import mongoose from "mongoose";
-import app, { mongoServerInstance } from "../server.js";
+import app from "../server.js";
+import { mongoServerInstance } from "../config/db.js";
 
 describe("Server basic endpoints", () => {
   afterAll(async () => {
