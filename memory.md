@@ -70,6 +70,23 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - Contributors must only work on issues explicitly assigned to them by a maintainer.
 - Enforced via `CONTRIBUTING.md`, `agent.md`, PR template checklist, and issue template warnings.
   
+### Backend Modularization Refactor (June 2026)
+
+- `server.js` was refactored from a single monolithic file into a modular folder structure for maintainability and scalability.
+- **New structure introduced:**
+  - `config/db.js` — Database connection logic extracted from `server.js`
+  - `routes/pharmacyRoutes.js` — Pharmacy auth and profile routes
+  - `routes/stockRoutes.js` — Stock CRUD routes
+  - `routes/drugRoutes.js` — Drug search route
+  - `controllers/pharmacyController.js` — Pharmacy business logic
+  - `controllers/stockController.js` — Stock business logic
+  - `controllers/drugController.js` — Drug search logic
+  - `middleware/authMiddleware.js` — JWT authentication middleware extracted from `server.js`
+- `server.js` is now responsible only for app initialization, middleware setup, and route mounting.
+- **ESM note:** All local imports must include the `.js` extension (e.g. `import Medicine from "../models/medicine.js"`) — omitting it causes `ERR_MODULE_NOT_FOUND` in Node.js ESM mode.
+- No breaking changes to existing API endpoints or database models.
+
+
 **RECORD ANY AND ALL FUTURE ARCHITECTURAL OR IMPORTANT DETAILS IN THIS DOCUMENT.**
 
 ---
