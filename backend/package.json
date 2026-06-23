@@ -9,7 +9,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "AGPL-3.0",
   "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
