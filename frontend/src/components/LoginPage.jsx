@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './LoginPage.css'
 import { Link, useNavigate } from 'react-router-dom'
 
-const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, "");
 function LoginPage() {
   const [userName, setUserName] = useState('')
   const [password, setPassword] = useState('')
