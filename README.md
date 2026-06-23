@@ -190,9 +190,11 @@ Click on map markers to view pharmacy details, including contact info, opening h
 
 ---
 
-## 🌍 Environment Variables
+## 🌍 Environment Variables (Optional for Local Dev)
 
-Create `.env` files in both `backend` and `frontend` using these keys:
+**For local development, you can skip this step entirely**—the app works out of the box with an in-memory database and default settings.
+
+If you want to connect to a real MongoDB Atlas database or customize settings, create `.env` files in both `backend` and `frontend` using these keys:
 
 ### `backend/.env`
 
