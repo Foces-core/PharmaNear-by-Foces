@@ -99,7 +99,7 @@ Examples:
 3. Run the tests locally using `pnpm run test` and ensure they pass.
 4. Push your branch and open a Pull Request targeting the `main` branch.
 5. Fill out the PR template completely. Link the issue your PR resolves (e.g., "Closes #42").
-6. Await review from maintainers and make any requested changes.
+6. Await review from maintainers or automated reviewing tools and make any requested changes ar made.
 
 ## 🏛️ Architecture Goals & Memory
 
