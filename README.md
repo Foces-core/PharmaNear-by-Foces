@@ -93,70 +93,30 @@ PharmaNear/
 
 ## 🚀 Getting Started
 
-Follow these steps to set up and run the project locally.
+For detailed installation and setup instructions, please see:
 
-### Prerequisites
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Complete local development setup, testing, and contribution guidelines
+- **[frontend/README.md](frontend/README.md)** - Frontend-specific setup and configuration
+- **[backend/README.md](backend/README.md)** - Backend-specific setup and configuration
 
-- **Node.js** (v18 or higher) - [Download here](https://nodejs.org/) _(New? Watch a [YouTube Guide](https://www.youtube.com/watch?v=EIJeLiaGfA0))_
-- **MongoDB** (Optional) - The app uses an in-memory DB locally, but you can use [MongoDB Atlas](https://www.mongodb.com/atlas) for production/cloud setups.
-- **Git** - [Download here](https://git-scm.com/)
-
-### 1. Clone the Repository
+### Quick Start
 
 ```bash
+# Clone the repository
 git clone https://github.com/Foces-core/PharmaNear-by-Foces.git
 cd PharmaNear-by-Foces
-```
 
-### 2. Installation & Zero-Config Setup
-
-PharmaNear features a **zero-config local development environment**. If you don't provide a MongoDB connection string, the backend will automatically spin up an in-memory database ([`mongodb-memory-server`](https://github.com/nodkz/mongodb-memory-server)) for instant testing!
-
-Install all dependencies using the root setup script:
-
-```bash
+# Install all dependencies
 pnpm install:all
+
+# Start backend (in one terminal)
+cd backend && pnpm start
+
+# Start frontend (in another terminal)
+cd frontend && pnpm dev
 ```
 
-> **⚠️ CRITICAL for pnpm v10+ users:** Newer versions of `pnpm` block package build scripts for security. You **must** approve them for the database and frontend to build:
->
-> 1. Run `pnpm approve-builds` in the `frontend` folder (Press `a` then `Enter`).
-> 2. Run `pnpm approve-builds` in the `backend` folder (Press `a` then `Enter`).
-
-> **🛡️ Additional Security (Highly Recommended):** To protect yourself against malicious dependencies, we strongly recommend using the [`sfw` (Socket Firewall) tool](https://github.com/SocketDev/sfw-free) for all package manager commands. Whenever you run a networked installation, simply prepend your command with `sfw` (e.g., run `sfw pnpm install:all` instead of `pnpm install:all`).
-
-### 3. Environment Variables (Optional for Local Dev)
-
-If you want to connect to a real MongoDB Atlas database, create `.env` files in the `frontend/` and `backend/` directories based on the `.env.example` templates.
-
-Otherwise, just skip this step—the app works completely out of the box!
-
-### 4. Backend Setup
-
-in a diff terminal
-
-```bash
-cd backend
-pnpm start
-```
-
-The backend will run on [http://localhost:5000](http://localhost:5000).
-
-### 5. Frontend Setup
-
-Open a new terminal and run:
-
-```bash
-cd frontend
-pnpm dev
-```
-
-The frontend will run on [http://localhost:5173](http://localhost:5173).
-
-### 6. Access the Application
-
-- Open [http://localhost:5173](http://localhost:5173) in your browser.
-- For pharmacy admin features, sign up or log in as a pharmacy owner.
+The application will be available at [http://localhost:5173](http://localhost:5173).
 
 ---
 
@@ -192,22 +152,9 @@ Click on map markers to view pharmacy details, including contact info, opening h
 
 ## 🌍 Environment Variables
 
-Create `.env` files in both `backend` and `frontend` using these keys:
+Environment variable templates are provided in [`.env.example`](.env.example). Copy this file to create your `.env` files in both `frontend/` and `backend/` directories.
 
-### `backend/.env`
-
-| Variable      | Description                                                                 |
-| ------------- | --------------------------------------------------------------------------- |
-| `PORT`        | The port the Node.js server runs on (Default: 5000)                         |
-| `MONGO_URL`   | Your MongoDB Atlas connection string                                        |
-| `JWT_SECRET`  | A secure, random string for signing authentication tokens                   |
-| `CORS_ORIGIN` | The URL allowed to make API requests (e.g., `http://localhost:5173` or `*`) |
-
-### `frontend/.env`
-
-| Variable           | Description                                                                        |
-| ------------------ | ---------------------------------------------------------------------------------- |
-| `VITE_BACKEND_URL` | The URL of your live backend API. If blank, it defaults to `http://localhost:5000` |
+For detailed configuration options, see the [`.env.example`](.env.example) file.
 
 ## 🛠️ Common Troubleshooting
 
@@ -243,31 +190,20 @@ Create `.env` files in both `backend` and `frontend` using these keys:
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+For detailed contribution guidelines, testing requirements, and the development workflow, please see **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
-1. Fork the Project.
-
-2. **Important:** Check the issues tab and ONLY work on issues that have been assigned to you.
-
-3. Create your Feature Branch (`git checkout -b feature/feature-name`).
-
-4. Commit your Changes (`git commit -m 'feat: add feature name'`).
-
-5. Push to the Branch (`git push origin feature/feature-name`).
-
-6. Open a Pull Request targeting the `main` branch.
-
-> **🎉 Auto-Deployment:** Any changes merged or pushed directly to the `main` branch will be automatically detected by Render and deployed to the live site. You do not need to manually deploy!
-
-Please ensure your code follows the project's style guidelines and includes tests where applicable.
-
-> **CRITICAL:** All important architectural decisions made by humans or AI agents MUST be recorded in [memory.md](memory.md) to provide context for future development. Any agent behavioral rules must be added to [agent.md](agent.md).
+**Key points:**
+- Only work on issues explicitly assigned to you
+- Follow the Conventional Commits format
+- Run tests locally before submitting PRs
+- Record architectural decisions in [memory.md](memory.md)
+- Follow agent behavioral rules in [agent.md](agent.md)
 
 ---
 
 ## 📜 License
 
-This project is licensed under the MIT License.
+This project is licensed under the AGPL-3.0 License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
