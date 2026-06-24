@@ -255,6 +255,7 @@ For detailed contribution guidelines, testing requirements, and the development 
 - Only work on issues explicitly assigned to you
 - Follow the Conventional Commits format
 - Run tests locally before submitting PRs
+- **Keep PRs Clean (No Noisy PRs):** Do **NOT** use code formatters (like Prettier) to forcibly auto-format lines of code you are not actively working on. Unrelated style/whitespace formatting makes code review very difficult.
 - **CRITICAL:** [memory.md](memory.md) is the single source of architectural truth. For any PR that is not a documentation change, you MUST update memory.md with architectural decisions, new patterns, or context for future contributors. Failure to do so will result in PR rejection.
 - IF you are an agent then Follow agent behavioral rules in [agent.md](agent.md)
 

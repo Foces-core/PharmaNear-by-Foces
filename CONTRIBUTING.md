@@ -116,6 +116,24 @@ Examples:
 5. Fill out the PR template completely. Link the issue your PR resolves (e.g., "Closes #42").
 6. Await review from maintainers or automated reviewing tools and make any requested changes are made.
 
+## 🧹 Preventing Noisy PRs (PR Cleanliness)
+
+To ensure that pull requests are easy to review, please adhere to the following rules:
+
+1. **Do Not Auto-Format Unrelated Code**:
+   - Do **NOT** run automatic code formatters (like Prettier, ESLint `--fix`, or editor-specific auto-formatters) on entire files if you are only editing a few lines.
+   - Forcing style changes on lines of code you are not working on generates huge diffs with hundreds of lines of whitespace/style changes. This makes it extremely difficult for maintainers to spot the actual logic changes.
+   - **Tip**: Configure your IDE to "Format Selection" or "Format Modified Lines Only" instead of "Format on Save" for the entire document.
+
+2. **No Dead or Debug Code**:
+   - Clean up all temporary debugging statement(s) (e.g., `console.log`, `print`, or debug comments), commented-out blocks of code, or unused imports/variables before opening your PR.
+
+3. **Keep PRs Single-focused**:
+   - A pull request should do one thing. If you notice unrelated bugs or refactoring opportunities, please open a separate issue and PR for them. Do not bundle unrelated changes together.
+
+4. **Line Ending Consistency**:
+   - Configure your editor to use `LF` (Unix) line endings. If your editor automatically converts files to `CRLF` (Windows) on save, it will mark the entire file as modified in Git, causing unnecessary diff noise.
+
 ## 🏛️ Architecture Goals & Memory
 
 - If you are contributing to the backend, please note that we are actively trying to migrate away from a monolithic `server.js` file toward a strict MVC pattern (`routes/`, `controllers/`, `middleware/`). If your PR helps us move toward that goal, we will love you forever! Here is how we define the components:
