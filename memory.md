@@ -70,7 +70,12 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - Contributors must only work on issues explicitly assigned to them by a maintainer.
 - Enforced via `CONTRIBUTING.md`, `agent.md`, PR template checklist, and issue template warnings.
 
+## 📝 Known Issues
 
+- Currency symbol: Some UI elements still use `$` instead of `₹` (INR). See GitHub Issue #21.
+- `<style jsx>` in `PharmacyPage.jsx` is Next.js syntax, not valid in Vite/React — causes a React warning.
+- `PharmacyDashboard.jsx` is a non-functional prototype using hardcoded dummy data (not connected to backend).
+- Health endpoint catch block uses wrong variable name (`err` instead of `error`) — will crash if the endpoint throws.
 
 ### Environment Variable Configuration (June 2026)
 - Frontend components use `VITE_BACKEND_URL` to connect to the backend API.
@@ -78,10 +83,7 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - `frontend/.env-sample` serves as a reference template for required variables.
 - When `VITE_BACKEND_URL` is undefined (e.g. in test environments), components fall back to an empty string (`""`) to prevent `TypeError` when calling `.replace()`.
 
-
-  
 ### Backend Modularization Refactor (June 2026)
-
 - `server.js` was refactored from a single monolithic file into a modular folder structure for maintainability and scalability.
 - **New structure introduced:**
   - `config/db.js` — Database connection logic extracted from `server.js`
@@ -93,9 +95,8 @@ Connects patients with nearby pharmacies to check medication stock. Features use
   - `controllers/drugController.js` — Drug search logic
   - `middleware/authMiddleware.js` — JWT authentication middleware extracted from `server.js`
 - `server.js` is now responsible only for app initialization, middleware setup, and route mounting.
-- **ESM note:** All local imports must include the `.js` extension (e.g. `import Medicine from "../models/medicine.js"`) — omitting it causes `ERR_MODULE_NOT_FOUND` in Node.js ESM mode.
+- **ESM note:** All local imports must include the `.js` extension (e.g., `import Medicine from "../models/medicine.js"`) — omitting it causes `ERR_MODULE_NOT_FOUND` in Node.js ESM mode.
 - No breaking changes to existing API endpoints or database models.
-
 
 **RECORD ANY AND ALL FUTURE ARCHITECTURAL OR IMPORTANT DETAILS IN THIS DOCUMENT.**
 
