@@ -102,6 +102,7 @@ Follow these steps to set up and run the project locally.
 - **Git** - [Download here](https://git-scm.com/)
 - **Editor Settings (VS Code)**: Ensure that **Insert Final Newline** is enabled in your editor settings (`"files.insertFinalNewline": true` in VS Code).
   - *Why?* POSIX standard defines a line as ending with a newline. Keeping a trailing newline prevents Git diff noise (it avoids modifying the last line just to add a newline later, which triggers a `\ No newline at end of file` warning) and ensures consistency across various dev tools and OS platforms.
+  - *Note on Line Endings*: The repository contains a `.gitattributes` file that automatically handles line endings (`eol=lf`) for all text files. You only need to manually configure Git's line endings globally or use the VS Code line endings settings if you cloned the repository *before* `.gitattributes` was added and have not updated/renormalized it since.
 
 ### 1. Clone the Repository
 

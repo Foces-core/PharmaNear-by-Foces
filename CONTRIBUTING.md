@@ -48,6 +48,9 @@ If you are using Visual Studio Code:
 2. Search for `Insert Final Newline`.
 3. Check the box for **Files: Insert Final Newline** (or add `"files.insertFinalNewline": true` to your `settings.json`).
 
+### Note on Line Endings
+The repository now includes a `.gitattributes` file that automatically handles line endings (`eol=lf`) on checkout and commit. You only need to manually configure Git's line endings globally or configure VS Code's line ending settings if you cloned the repository *before* `.gitattributes` was added and have not updated/renormalized it since.
+
 ### Why is this required?
 - **Git Diff Cleanliness**: When you append lines to a file that doesn't end with a newline, Git views the addition of a newline to the previous line as a modification. This creates unnecessary noise in pull requests and triggers a `\ No newline at end of file` warning.
 - **POSIX/UNIX Standard Compliance**: POSIX defines a line as ending with a newline character (`\n`). Many shell tools, compilers, and parsers expect files to end with a newline and might miss the last line or fail to process it correctly without one.
