@@ -3,7 +3,7 @@ import { FaCapsules, FaDollarSign, FaEdit, FaPlus, FaSave, FaSortNumericUp, FaTr
 import { Link, useNavigate } from 'react-router-dom';
 import "./PharmacyPage.css";
 
-const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "").replace(/\/+$/, "");
 
 export default function PharmacyPage() {
   const navigate = useNavigate();
