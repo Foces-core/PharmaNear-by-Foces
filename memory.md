@@ -60,7 +60,11 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 
 - All networked package manager commands (`pnpm install`, `npm`, `pip`, etc.) must be run through the `sfw` (Socket Firewall) tool to protect against malicious dependencies.
 - Documented in `agent.md`, `CONTRIBUTING.md`, and `README.md`.
+### Enforced pnpm Usage & Lockfile Cleanup (June 2026)
 
+- Removed conflicting `package-lock.json` files from `frontend/` and `backend/` directories to prevent dependency inconsistencies in the pnpm-based monorepo.
+- Added a root `.npmrc` file with `engine-strict=true`.
+- Configured the `engines` field in the root `package.json` to intentionally block `npm install` commands, enforcing `pnpm` as the exclusive package manager.
 ### Issue Assignment Policy (June 2026)
 
 - Contributors must only work on issues explicitly assigned to them by a maintainer.

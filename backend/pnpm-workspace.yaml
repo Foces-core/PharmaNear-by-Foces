@@ -2,3 +2,5 @@ packages:
   - '.'
 allowBuilds:
   bcrypt: true
+  mongodb-memory-server: true
+  unrs-resolver: true
