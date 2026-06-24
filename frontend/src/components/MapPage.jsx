@@ -7,7 +7,7 @@ import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from "react-leaf
 import { Link, useLocation } from "react-router-dom";
 import "./MapPage.css";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL.replace(/\/+$/, "");
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "").replace(/\/+$/, "");
 
 const fallbackPharmacies = [
   {
