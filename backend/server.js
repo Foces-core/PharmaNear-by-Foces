@@ -80,6 +80,12 @@ app.use('/api/pharmacy',pharmacyRoutes);
 app.use('/api/pharmacy/stock',stockRoutes);
 app.use('/api/drugs',drugRoutes);
 
+app.get("/api/training-calc", (req, res) => {
+  const { a, b } = req.query;
+  const result = Number(a) + Number(b);
+  res.json({ result });
+});
+
 const port = process.env.PORT || 5000
 
 if (process.env.NODE_ENV !== "test") {
