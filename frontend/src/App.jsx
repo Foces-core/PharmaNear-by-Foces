@@ -7,6 +7,7 @@ import PharmacyPage from './components/PharmacyPage.jsx';
 import PharmacyDashboard from './components/PharmacyDashboard.jsx';
 import LoginPage from './components/LoginPage.jsx';
 import SignupPage from './components/SignupPage.jsx';
+import NotFoundPage from './components/NotFoundPage.jsx';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/pharmacy/dashboard" element={<PharmacyDashboard />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
