@@ -256,6 +256,9 @@ If you want to connect to a real MongoDB Atlas database or deploy to production,
 
 For detailed contribution guidelines, testing requirements, and the development workflow, please see **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
+> [!IMPORTANT]
+> **Branch Protection Notice:** Direct pushes to the `main` branch are strictly blocked by GitHub branch protection rulesets. All updates must be made via a Pull Request (PR). Your PR must pass all CI status checks (tests & linting) and receive at least **1 approving review** from a maintainer before it can be merged.
+
 **Key points:**
 - Only work on issues explicitly assigned to you
 - **No Direct Pushes:** Direct pushes to `main` are blocked. All updates must go through Pull Requests.

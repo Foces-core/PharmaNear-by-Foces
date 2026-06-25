@@ -2,6 +2,11 @@
 
 > **⚠️ CAUTION:** This repository is currently exclusively for contributions from registered student participants of **College of Engineering Chengannur (CEC)** in the Season of Code event by Google Developers Group (GDG). External pull requests and issue assignment requests will be closed.
 
+> [!IMPORTANT]
+> **Branch Protection Notice:** Direct pushes to the `main` branch are strictly blocked by GitHub branch protection rulesets. All code changes must be submitted via a Pull Request (PR) from a feature/bugfix branch. Before merging, your PR must:
+> 1. Pass all automated workflow checks (such as tests and linting).
+> 2. Receive at least **1 approving review** from a maintainer.
+
 **⚠️ IMPORTANT: You must ONLY work on an issue if it has been explicitly assigned to you.**
 
 First off, thank you for considering contributing to PharmaNear! It's people like you that make open-source a great community.

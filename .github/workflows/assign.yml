@@ -164,7 +164,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issueNumber,
-                  body: `Hi @${commenter}, thank you for your interest! Currently, this repository is exclusively open for contributions from registered student participants of **College of Engineering Chengannur (CEC)** for the GDG Season of Code event.\n\nBecause of this, we cannot assign this issue to you. However, feel free to star the repository to track updates and check back later—we would love to have you contribute in the future if and as needed! Thanks for your understanding!`
+                  body: `Hi @${commenter}, thank you for your interest! Currently, this repository is exclusively open for contributions from registered student participants of **College of Engineering Chengannur (CEC)** for the GDG Season of Code event.\n\nBecause of this, we cannot assign this issue to you at this time. However, feel free to star the repository to track updates—we would love to have you contribute after the GDG event ends! Thanks for your understanding!`
                 });
                 console.log(`Declined assignment request from non-participant ${commenter}`);
               }
