@@ -26,13 +26,14 @@ jobs:
             const commenterLower = commenter.toLowerCase();
             const issueNumber = context.payload.issue.number;
 
-            // Robust regexes to match assignment intents, tolerating typos
+            // Robust regexes to match assignment intents, tolerating typos and common phrasings
             const triggerRegexes = [
               /^\s*\.take\b/,
               /^\s*\/assign\b/,
-              /\b(can you )?(please )?as{1,2}ign\s+(this\s+)?(issue|isuue|task|ticket)?\s*to me\b/,
+              /\b(can you |could you |please )?as{1,2}ign\s+(this\s+|it\s+)?(issue|isuue|task|ticket)?\s*to me\b/,
               /\bassign me\b/,
-              /\b(i'll|i will|let me) take (this|it|this issue|this isuue)\b/,
+              /\b(i'd|i'd like to|i'll|i will|let me|i want to|i would like to) take (this|it|this issue|this isuue)\b/,
+              /\b(i'd|i'd like to|i'll|i will|i want to|i would like to) work on (this|it|this issue|this isuue)\b/,
               /^\s*take\b/
             ];
             const isTrigger = triggerRegexes.some(rx => rx.test(commentBody));
