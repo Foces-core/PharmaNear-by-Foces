@@ -235,7 +235,7 @@ try {
       "pincode",
       "opening_hours",
       "closing_hours",
-      "contact_number",
+      "phone_number",
       "latitude",
       "longitude",
       "location_url",

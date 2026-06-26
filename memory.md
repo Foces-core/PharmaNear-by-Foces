@@ -114,6 +114,11 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - Invalid input returns `400 Bad Request` with structured error array: `{ error, details: [{ field, message }] }`.
 - Valid registrations proceed unchanged through existing flow.
 
+### Profile Update Phone Key Fix (June 2026)
+- Fixed key mismatch in `updateProfile` in `backend/controllers/pharmacyController.js`.
+- Changed `contact_number` to `phone_number` in the `allowed` fields array.
+- `phone_number` now correctly maps to the Pharmacy model field.
+
 ### Agent Customization Rules (June 2026)
 - A workspace-scoped customization rules file [AGENTS.md](file:///d:/git%20folder/PharmaNear/.agents/AGENTS.md) is added to the repository.
 - AI coding agents supporting the customizations framework will automatically parse and load the constraints defined in this file (e.g. Conventional Commit PR naming, security protocols, terse responses) directly into their system prompt for all turns.
