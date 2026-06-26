@@ -3,7 +3,7 @@ import { FaCapsules, FaDollarSign, FaEdit, FaPlus, FaSave, FaSortNumericUp, FaTr
 import { Link, useNavigate } from 'react-router-dom';
 import "./PharmacyPage.css";
 
-const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "http://localhost:5000").replace(/\/+$/, "");
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "").replace(/\/+$/, "");
 
 export default function PharmacyPage() {
   const navigate = useNavigate();
@@ -344,7 +344,7 @@ export default function PharmacyPage() {
             <h3 className="pharmacy-add-title">Add Medicine To Stock</h3>
             <form onSubmit={handleAdd} className="pharmacy-add-form">
               <div className="fm-input-groups relative">
-                <FaCapsules className="fm-icon" style={{ color: "#14967f" }} />
+                <FaCapsules className="fm-icon pharmacy-input-icon" />
                 <input
                   type="text"
                   placeholder="Medicine Name"
@@ -355,7 +355,7 @@ export default function PharmacyPage() {
                 />
               </div>
               <div className="fm-input-groups relative">
-                <FaSortNumericUp className="fm-icon" style={{ color: "#14967f" }} />
+                <FaSortNumericUp className="fm-icon pharmacy-input-icon" />
                 <input
                   type="number"
                   placeholder="Quantity"
@@ -367,7 +367,7 @@ export default function PharmacyPage() {
                 />
               </div>
               <div className="fm-input-groups relative">
-                <FaDollarSign className="fm-icon" style={{ color: "#14967f" }} />
+                <FaDollarSign className="fm-icon pharmacy-input-icon" />
                 <input
                   type="number"
                   step="0.01"
@@ -380,7 +380,7 @@ export default function PharmacyPage() {
                 />
               </div>
               <div className="fm-input-groups relative">
-                <FaCapsules className="fm-icon" style={{ color: "#14967f" }} />
+                <FaCapsules className="fm-icon pharmacy-input-icon" />
                 <input
                   type="text"
                   placeholder="Strength (optional, e.g., 500mg)"
@@ -390,7 +390,7 @@ export default function PharmacyPage() {
                 />
               </div>
               <button className="fm-search-btn" type="submit">
-                <FaPlus style={{ marginRight: 8 }} /> Add To Stock
+                <FaPlus className="pharmacy-add-button-icon" /> Add To Stock
               </button>
             </form>
             {error && <div className="pharmacy-error">{error}</div>}
@@ -398,166 +398,85 @@ export default function PharmacyPage() {
         </div>
         {/* Table below both sections */}
         <div className="pharmacy-table-section">
-          <div style={{ 
-            background: "#fff", 
-            borderRadius: "12px", 
-            overflow: "hidden", 
-            border: "1px solid #e2e8f0",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)",
-            marginBottom: "200px"
-          }}>
+          <div className="pharmacy-table-shell">
             {/* Table Header */}
-            <div style={{ 
-              display: isMobile ? "none" : "grid", 
-              gridTemplateColumns: "2fr 1fr 1fr 1fr", 
-              padding: "16px 20px", 
-              background: "linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)",
-              fontWeight: 600,
-              fontSize: "0.9rem",
-              color: "#4a5568",
-              borderBottom: "2px solid #e2e8f0"
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <FaCapsules style={{ color: "#00664c" }} />
+            <div className={`pharmacy-table-header ${isMobile ? "pharmacy-table-header-mobile" : ""}`}>
+              <div className="pharmacy-table-header-item">
+                <FaCapsules className="pharmacy-table-header-icon" />
                 Medicine Name
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <FaSortNumericUp style={{ color: "#00664c" }} />
+              <div className="pharmacy-table-header-item">
+                <FaSortNumericUp className="pharmacy-table-header-icon" />
                 Quantity
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <FaDollarSign style={{ color: "#00664c" }} />
+              <div className="pharmacy-table-header-item">
+                <FaDollarSign className="pharmacy-table-header-icon" />
                 Price (₹)
               </div>
-              <div style={{ textAlign: 'right' }}>Actions</div>
+              <div className="pharmacy-table-header-actions">Actions</div>
             </div>
             {/* Table Body */}
             {loading ? (
-              <div style={{ 
-                padding: "40px", 
-                textAlign: "center", 
-                color: "#718096",
-                fontSize: "1.1rem"
-              }}>
-                <div style={{ 
-                  display: "inline-block", 
-                  width: "24px", 
-                  height: "24px", 
-                  border: "3px solid #e2e8f0",
-                  borderTop: "3px solid #667eea",
-                  borderRadius: "50%",
-                  animation: "spin 1s linear infinite",
-                  marginBottom: "10px"
-                }}></div>
+              <div className="pharmacy-table-loading">
+                <div className="pharmacy-table-spinner"></div>
                 <div>Loading stock data...</div>
               </div>
             ) : stockItems.length === 0 ? (
-              <div style={{ 
-                padding: "40px", 
-                textAlign: "center", 
-                color: "#718096",
-                fontSize: "1.1rem"
-              }}>
-                <FaCapsules style={{ fontSize: "2rem", marginBottom: "10px", opacity: 0.5 }} />
+              <div className="pharmacy-table-empty">
+                <FaCapsules className="pharmacy-table-empty-icon" />
                 <div>No medicines in stock yet.</div>
-                <div style={{ fontSize: "0.9rem", marginTop: "5px", opacity: 0.8 }}>
+                <div className="pharmacy-table-empty-caption">
                   Add medicines using the form above to get started.
                 </div>
               </div>
             ) : (
-              stockItems.map((item, index) => (
-                <div key={item.id} style={{ 
-                  display: isMobile ? "block" : "grid", 
-                  gridTemplateColumns: isMobile ? "none" : "2fr 1fr 1fr 1fr", 
-                  padding: isMobile ? "16px" : "16px 20px", 
-                  borderTop: index > 0 ? "1px solid #f1f5f9" : "none",
-                  backgroundColor: editingItem?.id === item.id ? '#f0fdf4' : (index % 2 === 0 ? '#fafbfc' : 'white'),
-                  transition: "all 0.2s ease",
-                  alignItems: "center",
-                  marginBottom: isMobile ? "8px" : "0"
-                }}>
+              stockItems.map((item) => (
+                <div
+                  key={item.id}
+                  className={`pharmacy-table-row ${isMobile ? "pharmacy-table-row-mobile" : ""} ${editingItem?.id === item.id ? "pharmacy-table-row-editing" : ""}`}
+                >
                   {editingItem?.id === item.id ? (
-                    <div className="edit-form-container" style={{ gridColumn: '1 / -1', display: 'contents' }}>
-                      <div style={{ gridColumn: '1' }}>
+                    <div className="edit-form-container pharmacy-table-edit-grid">
+                      <div className="pharmacy-edit-field pharmacy-edit-field-name">
                         <input
                           type="text"
-                          className="fm-input"
+                          className="fm-input pharmacy-edit-input"
                           value={editingItem.name}
                           onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
-                          style={{ 
-                            margin: 0, 
-                            fontSize: "0.9rem",
-                            border: "2px solid #10b981",
-                            boxShadow: "0 0 0 3px rgba(16, 185, 129, 0.1)"
-                          }}
                         />
                       </div>
-                      <div style={{ gridColumn: '2' }}>
+                      <div className="pharmacy-edit-field pharmacy-edit-field-quantity">
                         <input
                           type="number"
-                          className="fm-input"
+                          className="fm-input pharmacy-edit-input"
                           value={editingItem.quantity}
                           onChange={(e) => setEditingItem({ ...editingItem, quantity: parseInt(e.target.value, 10) })}
-                          style={{ 
-                            margin: 0, 
-                            fontSize: "0.9rem",
-                            border: "2px solid #10b981",
-                            boxShadow: "0 0 0 3px rgba(16, 185, 129, 0.1)"
-                          }}
                           min="1"
                         />
                       </div>
-                      <div style={{ gridColumn: '3' }}>
+                      <div className="pharmacy-edit-field pharmacy-edit-field-price">
                         <input
                           type="number"
-                          className="fm-input"
+                          className="fm-input pharmacy-edit-input"
                           value={editingItem.price}
                           onChange={(e) => setEditingItem({ ...editingItem, price: parseFloat(e.target.value) })}
-                          style={{ 
-                            margin: 0, 
-                            fontSize: "0.9rem",
-                            border: "2px solid #10b981",
-                            boxShadow: "0 0 0 3px rgba(16, 185, 129, 0.1)"
-                          }}
                           min="0"
                           step="0.01"
                         />
                       </div>
-                      <div style={{ 
-                        display: 'flex', 
-                        gap: '10px', 
-                        justifyContent: 'flex-end', 
-                        alignItems: 'center', 
-                        gridColumn: '4'
-                      }}>
-                        <button 
-                          type="button" 
-                          className="fm-search-btn" 
+                      <div className="pharmacy-table-edit-actions">
+                        <button
+                          type="button"
+                          className="fm-search-btn pharmacy-table-save-button"
                           onClick={saveEditing}
-                          style={{ 
-                            padding: "8px 16px",
-                            fontSize: "0.8rem",
-                            backgroundColor: '#10b981',
-                            minHeight: "auto",
-                            width: isMobile ? '100%' : 'auto'
-                          }}
                         >
                           <FaSave size={14} />
                           Save
                         </button>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
+                          className="pharmacy-table-cancel-button"
                           onClick={cancelEditing}
-                          style={{ 
-                            padding: "8px 16px",
-                            fontSize: "0.8rem",
-                            backgroundColor: "#f8fafc",
-                            color: "#6b7280",
-                            border: "1px solid #d1d5db",
-                            borderRadius: "6px",
-                            cursor: "pointer",
-                            width: isMobile ? '100%' : 'auto'
-                          }}
                         >
                           Cancel
                         </button>
@@ -567,88 +486,33 @@ export default function PharmacyPage() {
                     <>
                       {isMobile ? (
                         <div>
-                          <div style={{ 
-                            fontWeight: "600", 
-                            color: "#00664c",
-                            fontSize: "1rem",
-                            marginBottom: "8px",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px"
-                          }}>
-                            <FaCapsules style={{ color: "#667eea" }} />
+                          <div className="pharmacy-table-mobile-title">
+                            <FaCapsules className="pharmacy-table-mobile-icon" />
                             {item.name}
                           </div>
-                          <div style={{ 
-                            display: "flex", 
-                            justifyContent: "space-between", 
-                            alignItems: "center",
-                            marginBottom: "12px"
-                          }}>
-                            <div style={{ 
-                              color: "#00664c", 
-                              fontWeight: "600",
-                              fontSize: "0.9rem",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "4px"
-                            }}>
+                          <div className="pharmacy-table-mobile-summary">
+                            <div className="pharmacy-table-mobile-meta">
                               <FaSortNumericUp size={12} />
                               {item.quantity} units
                             </div>
-                            <div style={{ 
-                              color: "#00664c", 
-                              fontWeight: "600",
-                              fontSize: "0.9rem",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "4px"
-                            }}>
+                            <div className="pharmacy-table-mobile-meta">
                               <FaDollarSign size={12} />
                               ₹{item.price.toFixed(2)}
                             </div>
                           </div>
-                          <div style={{ 
-                            display: 'flex', 
-                            gap: '8px', 
-                            justifyContent: 'flex-end' 
-                          }}>
-                            <button 
-                              type="button" 
+                          <div className="pharmacy-table-actions">
+                            <button
+                              type="button"
                               onClick={() => startEditing(item)}
-                              style={{ 
-                                padding: "8px 12px",
-                                backgroundColor: "#dbeafe",
-                                color: "#1d4ed8",
-                                border: "1px solid #bfdbfe",
-                                borderRadius: "6px",
-                                cursor: "pointer",
-                                fontSize: "0.8rem",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "4px",
-                                transition: "all 0.2s ease"
-                              }}
+                              className="pharmacy-table-action-button pharmacy-table-action-button-edit"
                             >
                               <FaEdit size={12} />
                               Edit
                             </button>
-                            <button 
-                              type="button" 
+                            <button
+                              type="button"
                               onClick={() => deleteItem(item.id)}
-                              style={{ 
-                                padding: "8px 12px",
-                                backgroundColor: "#fee2e2",
-                                color: "#dc2626",
-                                border: "1px solid #fecaca",
-                                borderRadius: "6px",
-                                cursor: "pointer",
-                                fontSize: "0.8rem",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "4px",
-                                transition: "all 0.2s ease"
-                              }}
+                              className="pharmacy-table-action-button pharmacy-table-action-button-delete"
                             >
                               <FaTrash size={12} />
                               Delete
@@ -657,81 +521,22 @@ export default function PharmacyPage() {
                         </div>
                       ) : (
                         <>
-                          <div style={{ 
-                            fontWeight: "600", 
-                            color: "#00664c",
-                            fontSize: "0.95rem",
-                            wordBreak: "break-word"
-                          }}>
-                            {item.name}
-                          </div>
-                          <div style={{ 
-                            color: "#00664c", 
-                            fontWeight: "600",
-                            fontSize: "0.95rem"
-                          }}>
-                            {item.quantity} units
-                          </div>
-                          <div style={{ 
-                            color: "#00664c", 
-                            fontWeight: "600",
-                            fontSize: "0.95rem"
-                          }}>
-                            ₹{item.price.toFixed(2)}
-                          </div>
-                          <div style={{ 
-                            display: 'flex', 
-                            gap: '8px', 
-                            justifyContent: 'flex-end' 
-                          }}>
-                            <button 
-                              type="button" 
+                          <div className="pharmacy-table-cell pharmacy-table-cell-name">{item.name}</div>
+                          <div className="pharmacy-table-cell">{item.quantity} units</div>
+                          <div className="pharmacy-table-cell">₹{item.price.toFixed(2)}</div>
+                          <div className="pharmacy-table-actions">
+                            <button
+                              type="button"
                               onClick={() => startEditing(item)}
-                              style={{ 
-                                padding: "8px 12px",
-                                backgroundColor: "#dbeeeaff",
-                                color: "#1a9e87",
-                                border: "1px solid #a1e7d6ff",
-                                borderRadius: "6px",
-                                cursor: "pointer",
-                                fontSize: "0.8rem",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "4px",
-                                transition: "all 0.2s ease"
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = "#bfdbfe";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = "#dbeafe";
-                              }}
+                              className="pharmacy-table-action-button pharmacy-table-action-button-edit"
                             >
                               <FaEdit size={12} />
                               Edit
                             </button>
-                            <button 
-                              type="button" 
+                            <button
+                              type="button"
                               onClick={() => deleteItem(item.id)}
-                              style={{ 
-                                padding: "8px 12px",
-                                backgroundColor: "#fee2e2",
-                                color: "#dc2626",
-                                border: "1px solid #fecaca",
-                                borderRadius: "6px",
-                                cursor: "pointer",
-                                fontSize: "0.8rem",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "4px",
-                                transition: "all 0.2s ease"
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = "#fecaca";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = "#fee2e2";
-                              }}
+                              className="pharmacy-table-action-button pharmacy-table-action-button-delete"
                             >
                               <FaTrash size={12} />
                               Delete
@@ -746,12 +551,6 @@ export default function PharmacyPage() {
             )}
           </div>
         </div>
-        <style>{`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}</style>
       </main>
 
       <footer className="fm-footer">

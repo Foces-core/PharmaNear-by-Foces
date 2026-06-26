@@ -1,0 +1,171 @@
+name: Automated Issue Assignment
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  assign-issue:
+    # Only run on pull request or issue comments, not on actions by bots
+    if: (!github.event.comment.user.bot)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Process Assignment Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commentBody = context.payload.comment.body.trim().toLowerCase();
+            const commenter = context.payload.comment.user.login;
+            const commenterLower = commenter.toLowerCase();
+            const issueNumber = context.payload.issue.number;
+
+            // Robust regexes to match assignment intents, tolerating typos and common phrasings
+            const triggerRegexes = [
+              /^\s*\.take\b/,
+              /^\s*\/assign\b/,
+              /\b(can you |could you |please )?as{1,2}ign\s+(this\s+|it\s+)?(issue|isuue|task|ticket)?\s*to me\b/,
+              /\bassign me\b/,
+              /\b(i'd|i'd like to|i'll|i will|let me|i want to|i would like to) take (this|it|this issue|this isuue)\b/,
+              /\b(i'd|i'd like to|i'll|i will|i want to|i would like to) work on (this|it|this issue|this isuue)\b/,
+              /^\s*take\b/
+            ];
+            const isTrigger = triggerRegexes.some(rx => rx.test(commentBody));
+
+            if (!isTrigger) {
+              console.log("Comment does not contain any assignment trigger keywords. Skipping.");
+              return;
+            }
+
+            // Load participants list
+            const fs = require('fs');
+            let participants = [];
+            try {
+              const data = fs.readFileSync('.github/participants.json', 'utf8');
+              participants = JSON.parse(data);
+            } catch (err) {
+              console.error("Failed to load participants.json:", err);
+              return;
+            }
+
+            // Check if commenter is a registered participant
+            const isParticipant = participants.includes(commenterLower);
+
+            if (isParticipant) {
+              // Fetch issue details
+              const issue = await github.rest.issues.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber
+              });
+
+              // Check if the issue or PR is already assigned
+              if (issue.data.assignees && issue.data.assignees.length > 0) {
+                const currentAssignee = issue.data.assignees[0].login;
+                if (currentAssignee.toLowerCase() === commenterLower) {
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNumber,
+                    body: `@${commenter} you are already assigned to this issue!`
+                  });
+                } else {
+                  await github.rest.issues.createComment({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNumber,
+                    body: `Hi @${commenter}, this issue is already assigned to @${currentAssignee}. Please find another unassigned issue to work on! Thanks.`
+                  });
+                }
+                return;
+              }
+
+              // Assign issue to commenter
+              await github.rest.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                assignees: [commenter]
+              });
+
+              // Post confirmation comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: `Hi @${commenter}, this issue has been successfully assigned to you! Best of luck! Feel free to ask here if you have any questions along the way.`
+              });
+              console.log(`Successfully assigned issue #${issueNumber} to ${commenter}`);
+            } else {
+              // Levenshtein distance function for similarity checks
+              function getLevenshteinDistance(a, b) {
+                const matrix = [];
+                for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+                for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+                for (let i = 1; i <= b.length; i++) {
+                  for (let j = 1; j <= a.length; j++) {
+                    if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                      matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                      matrix[i][j] = Math.min(
+                        matrix[i - 1][j - 1] + 1, // substitution
+                        matrix[i][j - 1] + 1,     // insertion
+                        matrix[i - 1][j] + 1      // deletion
+                      );
+                    }
+                  }
+                }
+                return matrix[b.length][a.length];
+              }
+
+              const cleanUsername = (str) => str.toLowerCase().replace(/[^a-z]/g, '');
+              const commenterCleaned = cleanUsername(commenterLower);
+
+              let similarParticipant = null;
+              for (const p of participants) {
+                const pCleaned = cleanUsername(p);
+                // Similar if:
+                // 1. Cleaned names match (e.g. missing hyphen or underscore)
+                // 2. Levenshtein edit distance <= 2 on original name
+                // 3. Levenshtein edit distance <= 1 on cleaned name
+                if (commenterCleaned === pCleaned || 
+                    getLevenshteinDistance(commenterLower, p) <= 2 ||
+                    getLevenshteinDistance(commenterCleaned, pCleaned) <= 1) {
+                  similarParticipant = p;
+                  break;
+                }
+              }
+
+              if (similarParticipant) {
+                // Doubt case: username is too similar to a registered participant. Ping maintainers.
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  labels: ['pending-assignment-review']
+                });
+
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  body: `Hi @sebin-gg and @lishajins, the user @${commenter} has requested to take this issue but is not directly on the whitelist. However, their username is very similar to the registered participant @${similarParticipant}. Bypassing auto-assignment/rejection and marking for manual review.`
+                });
+                console.log(`Doubt case flagged for commenter ${commenter} (similar to whitelisted ${similarParticipant})`);
+              } else {
+                // Post rejection comment for external community members
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  body: `Hi @${commenter}, thank you for your interest! Currently, this repository is exclusively open for contributions from registered student participants of **College of Engineering Chengannur (CEC)** for the GDG Season of Code event.\n\nBecause of this, we cannot assign this issue to you at this time. However, feel free to star the repository to track updates—we would love to have you contribute after the GDG event ends! Thanks for your understanding!`
+                });
+                console.log(`Declined assignment request from non-participant ${commenter}`);
+              }
+            }

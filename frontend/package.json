@@ -34,9 +34,17 @@
     "vite": "^7.0.4",
     "vitest": "^4.1.8"
   },
-  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "description": "PharmaNear is a web platform that helps users locate nearby pharmacies, medicines, and healthcare services.",
   "main": "eslint.config.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "pharmanear",
+    "pharmacy",
+    "healthcare",
+    "medicine",
+    "react",
+    "vite",
+    "frontend"
+  ],
+  "author": "FOCES",
+  "license": "AGPL-3.0"
 }

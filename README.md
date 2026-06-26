@@ -1,11 +1,11 @@
 # 💊 PharmaNear: Medicine Location & Inventory Management System
 
-> **⚠️ CAUTION:** This repository is currently exclusively for contributions from participants in the Season of Code event by Google Developers Group (GDG). In the future, others might be allowed to contribute, but right now it is restricted to participants only.
+> **⚠️ CAUTION:** This repository is currently exclusively for contributions from registered student participants of **College of Engineering Chengannur (CEC)** in the Season of Code event by Google Developers Group (GDG). External pull requests and issue assignment requests will be closed.
 
 > **🤖 FOR AI AGENTS & LLMs:** Before analyzing or modifying this repository, you **MUST** read [agent.md](agent.md) for behavioral rules and [memory.md](memory.md) for strict architectural context. Do not proceed without reading them.
 > **PharmaNear** is a full-stack web application designed to bridge the gap between users searching for specific medicines and nearby pharmacies that stock them. It offers an intuitive search experience for users and a secure admin dashboard for pharmacy owners to manage inventory and profile details efficiently.
 
-🌐 **Live Demo:** [https://pharmanear-aneu.onrender.com](https://pharmanear-aneu.onrender.com)
+🌐 **Live Demo:** [https://pharmanear-frontend-qv2x.onrender.com](https://pharmanear-frontend-qv2x.onrender.com)
 
 ---
 
@@ -100,6 +100,9 @@ Follow these steps to set up and run the project locally.
 - **Node.js** (v18 or higher) - [Download here](https://nodejs.org/) _(New? Watch a [YouTube Guide](https://www.youtube.com/watch?v=EIJeLiaGfA0))_
 - **MongoDB** (Optional) - The app uses an in-memory DB locally, but you can use [MongoDB Atlas](https://www.mongodb.com/atlas) for production/cloud setups.
 - **Git** - [Download here](https://git-scm.com/)
+- **Editor Settings (VS Code)**: Ensure that **Insert Final Newline** is enabled in your editor settings (`"files.insertFinalNewline": true` in VS Code).
+  - *Why?* POSIX standard defines a line as ending with a newline. Keeping a trailing newline prevents Git diff noise (it avoids modifying the last line just to add a newline later, which triggers a `\ No newline at end of file` warning) and ensures consistency across various dev tools and OS platforms.
+  - *Note on Line Endings*: The repository contains a `.gitattributes` file that automatically handles line endings (`eol=lf`) for all text files. You only need to manually configure Git's line endings globally or use the VS Code line endings settings if you cloned the repository *before* `.gitattributes` was added and have not updated/renormalized it since.
 
 ### 1. Clone the Repository
 
@@ -133,7 +136,7 @@ Otherwise, just skip this step—the app works completely out of the box!
 
 ### 4. Backend Setup
 
-in a diff terminal
+In a different terminal:
 
 ```bash
 cd backend
@@ -192,7 +195,11 @@ Click on map markers to view pharmacy details, including contact info, opening h
 
 ## 🌍 Environment Variables
 
-Create `.env` files in both `backend` and `frontend` using these keys:
+**For local development, you can skip this step entirely**—the app works out of the box with an in-memory database and default settings.
+
+However, **for production deployment, you MUST configure these variables** to ensure security and proper functionality.
+
+If you want to connect to a real MongoDB Atlas database or deploy to production, create `.env` files in both `backend` and `frontend` using these keys:
 
 ### `backend/.env`
 
@@ -200,14 +207,18 @@ Create `.env` files in both `backend` and `frontend` using these keys:
 | ------------- | --------------------------------------------------------------------------- |
 | `PORT`        | The port the Node.js server runs on (Default: 5000)                         |
 | `MONGO_URL`   | Your MongoDB Atlas connection string                                        |
-| `JWT_SECRET`  | A secure, random string for signing authentication tokens                   |
+| `JWT_SECRET`  | **REQUIRED for production.** A secure, random string for signing authentication tokens. Falls back to an insecure default key in local dev, but this MUST be overridden in production to prevent security vulnerabilities. |               |
 | `CORS_ORIGIN` | The URL allowed to make API requests (e.g., `http://localhost:5173` or `*`) |
+
+> ⚠️ **Security Note:** The `JWT_SECRET` has a fallback value for local development convenience. **Never deploy to production without setting a custom `JWT_SECRET`**, as the fallback key is publicly visible in the source code and can be exploited.
 
 ### `frontend/.env`
 
 | Variable           | Description                                                                        |
 | ------------------ | ---------------------------------------------------------------------------------- |
-| `VITE_BACKEND_URL` | The URL of your live backend API. If blank, it defaults to `http://localhost:5000` |
+| `VITE_BACKEND_URL` | The URL of your live backend API. Required for all API calls. Example: `http://localhost:5000` |
+
+> See [`.env.example`](.env.example) for a complete template with comments.
 
 ## 🛠️ Common Troubleshooting
 
@@ -243,31 +254,26 @@ Create `.env` files in both `backend` and `frontend` using these keys:
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+For detailed contribution guidelines, testing requirements, and the development workflow, please see **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
-1. Fork the Project.
+> [!IMPORTANT]
+> **Pull Request Requirements:** All code changes must be submitted via a Pull Request (PR). Before merging, your PR must pass all automated status checks (tests & linting) and receive at least **1 approving review** from a maintainer.
 
-2. **Important:** Check the issues tab and ONLY work on issues that have been assigned to you.
-
-3. Create your Feature Branch (`git checkout -b feature/feature-name`).
-
-4. Commit your Changes (`git commit -m 'feat: add feature name'`).
-
-5. Push to the Branch (`git push origin feature/feature-name`).
-
-6. Open a Pull Request targeting the `main` branch.
-
-> **🎉 Auto-Deployment:** Any changes merged or pushed directly to the `main` branch will be automatically detected by Render and deployed to the live site. You do not need to manually deploy!
-
-Please ensure your code follows the project's style guidelines and includes tests where applicable.
-
-> **CRITICAL:** All important architectural decisions made by humans or AI agents MUST be recorded in [memory.md](memory.md) to provide context for future development. Any agent behavioral rules must be added to [agent.md](agent.md).
+**Key points:**
+- Only work on issues explicitly assigned to you
+- **Avoid Force-Pushing:** Do not force-push (`git push --force`) once a review has started. Push standard commits on top of your branch instead.
+- Follow the Conventional Commits format
+- Run tests locally before submitting PRs
+- **Monitor and Fix Workflow Checks:** You must monitor the status of the automated GitHub Actions workflows (tests and linting) on your PR. If any checks fail, click "Details" to view the logs, fix the errors yourself, and push the updates. Do not ask maintainers for a review until all automated checks are green.
+- **Keep PRs Clean (No Noisy PRs):** Do **NOT** use code formatters (like Prettier) to forcibly auto-format lines of code you are not actively working on. Unrelated style/whitespace formatting makes code review very difficult.
+- **CRITICAL:** [memory.md](memory.md) is the single source of architectural truth. For any PR that is not a documentation change, you MUST update memory.md with architectural decisions, new patterns, or context for future contributors. Failure to do so will result in PR rejection.
+- **AI Agent Guidelines:** If you are an AI agent, the workspace-specific rules in [.agents/AGENTS.md](.agents/AGENTS.md) will be automatically loaded into your active system instructions by the platform customization engine.
 
 ---
 
 ## 📜 License
 
-This project is licensed under the MIT License.
+This project is licensed under the AGPL-3.0 License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
@@ -280,6 +286,10 @@ This project is licensed under the MIT License.
 ---
 
 ### Contact Maintainers
+
+> **💬 Mentioning Etiquette (FOSS Protocol):**
+> Please do **not** directly `@` mention maintainers in issues or pull requests unless there is an urgent security emergency or live deployments are failing.
+> * *Why?* Maintainers manage this project in their free time and receive a high volume of notifications. Unnecessary pings lead to notification fatigue. Rest assured, all issues and PRs are reviewed regularly. Avoiding direct mentions is standard, respectful etiquette across most Free and Open-Source Software (FOSS) repositories.
 
 - **Sebin Mathew**
   - 📧 Email: Sebinmathew543@gmail.com

@@ -1,0 +1,28 @@
+# 1. Default line ending normalization to Unix-style LF
+* text=auto eol=lf
+
+# 2. Explicitly mark code & configuration as text with LF endings
+*.js text eol=lf
+*.jsx text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.npmrc text eol=lf
+
+# 3. Explicitly declare binary files to prevent normalization
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.svg text eol=lf
+*.ico binary
+
+# 4. Clean up release archives (export-ignore)
+# These files/directories will be omitted if you run `git archive` (e.g., zip downloads)
+.github/ export-ignore
+docs/ export-ignore
+backend/tests/ export-ignore

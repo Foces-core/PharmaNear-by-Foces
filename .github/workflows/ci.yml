@@ -16,6 +16,46 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Verify memory.md is updated for code changes
+      if: github.event_name == 'pull_request'
+      env:
+        PR_BODY: ${{ github.event.pull_request.body }}
+      run: |
+        # Check if the PR body has "No documentation changes needed" selected
+        if echo "$PR_BODY" | grep -qi '\-[[:space:]]*\[x\][[:space:]]*No documentation changes needed'; then
+          echo "Bypassing memory.md check (marked as no documentation changes needed)."
+          exit 0
+        fi
+
+        git fetch origin main
+        CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+        echo "Changed files in PR:"
+        echo "$CHANGED_FILES"
+        
+        CODE_CHANGED=false
+        if echo "$CHANGED_FILES" | grep -qE '^(backend/|frontend/)'; then
+          CODE_CHANGED=true
+        fi
+        
+        MEMORY_UPDATED=false
+        if echo "$CHANGED_FILES" | grep -q 'memory.md'; then
+          MEMORY_UPDATED=true
+        fi
+        
+        if [ "$CODE_CHANGED" = true ] && [ "$MEMORY_UPDATED" = false ]; then
+          echo "Error: memory.md must be updated for all backend or frontend code changes."
+          echo "If no documentation is needed, check the 'No documentation changes needed' box in your PR template."
+          exit 1
+        else
+          echo "memory.md check passed."
+        fi
+
+    - name: Check for Windows (CRLF) Line Endings
+      run: |
+        git grep -I --files-with-matches $'\r' . && echo "Error: CRLF line endings detected. Please convert to LF." && exit 1 || echo "All text files are LF."
     
     - name: Setup pnpm
       uses: pnpm/action-setup@v3
@@ -41,6 +81,12 @@ jobs:
         cd backend && pnpm install
         cd ../frontend && pnpm install
         
+    - name: Run Backend Linting Check
+      run: cd backend && pnpm run lint
+
+    - name: Run Frontend Linting Check
+      run: cd frontend && pnpm run lint
+
     - name: Run Backend Tests
       run: cd backend && pnpm test
       

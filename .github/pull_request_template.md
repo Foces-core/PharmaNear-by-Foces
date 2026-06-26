@@ -15,11 +15,26 @@ Closes #
 | ------ | ----- |
 |        |       |
 
+## 📚 Documentation Changes
+<!-- If your changes require documentation updates, please list them here. -->
+*If your changes affect the codebase, API, or user-facing features, documentation updates are required.*
+- [ ] No documentation changes needed
+- [ ] Updated README.md
+- [ ] Updated CONTRIBUTING.md
+- [ ] Updated inline code comments
+- [ ] Other: ________________
+
+## ⚙️ Environment Variables
+<!-- If any new environment variables need to be added to the project due to the merging of this PR, please list them out below and ensure they are added to .env.example templates. -->
+- [ ] No new environment variables needed
+- [ ] Yes, new environment variables are required (please list keys and description below):
+  - Key(s): 
+
 ## ✅ Testing Checklist
 <!-- Please review and check the applicable items. -->
 - [ ] I have read the [CONTRIBUTING.md](../CONTRIBUTING.md) guide.
 - [ ] I am assigned to the linked issue(s).
 - [ ] I have tested these changes locally.
 - [ ] I have run `pnpm run test` and all tests pass.
-- [ ] I have added/updated necessary documentation.
+- [ ] My code uses standard LF (Unix-style) line endings.
 - [ ] My commit messages follow the Conventional Commits format.

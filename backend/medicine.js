@@ -1,12 +1,4 @@
-import express from "express";
 import Medicine from "./models/medicine.js";
-
-
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // MongoDB connection is handled in index.js
 
