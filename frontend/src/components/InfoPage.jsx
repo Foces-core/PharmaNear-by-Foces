@@ -12,9 +12,9 @@ function InfoPage({ title, content }) {
 
       {/* Main Content */}
       <main className="info-content">
-        <h1>{title}</h1>
+        <h1 className="info-title">{title}</h1>
 
-        <p className="info-text">{content}</p>
+        <div className="info-text">{content}</div>
 
         <Link to="/" className="back-button">
           Back to Home
