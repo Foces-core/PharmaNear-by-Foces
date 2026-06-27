@@ -142,6 +142,11 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - Added `/api/pharmacy/logout` route to clear httpOnly cookie on logout
 - `pharmacy_user_name` and `pharmacy_id` still stored in localStorage for UI display only
 - Eliminates XSS token theft vulnerability
+### PWA & Favicon Configuration (June 2026)
+- Added a complete favicon kit (16x16, 32x32, 192x192, 512x512) and `apple-touch-icon.png` to `frontend/public/`.
+- Added `site.webmanifest` to enable Progressive Web App (PWA) installation and cross-browser compatibility.
+- Updated `frontend/index.html` with standard `<link>` tags for these assets.
+- **Note:** The original `favicon.png` (512x512) was retained as a fallback for legacy browsers and older bookmarking systems that may still look for the default `/favicon.png` path.
 
 ## 🔗 Related Documentation
 
