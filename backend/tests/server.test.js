@@ -349,7 +349,7 @@ describe("PharmaNear Full Integration Test Suite", () => {
       expect(response.body.drug.name).toBe("Amoxicillin Test");
       expect(response.body).toHaveProperty("stocks");
       expect(response.body.stocks).toHaveLength(1);
-      expect(response.body.stocks[0].pharmacy_id).toBe(pharmacyId);
+      expect(response.body.stocks[0].pharmacy._id.toString()).toBe(pharmacyId);
       expect(response.body.stocks[0].stock.quantity).toBe(45);
     });
 

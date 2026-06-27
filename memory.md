@@ -130,6 +130,11 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - AI coding agents supporting the customizations framework will automatically parse and load the constraints defined in this file (e.g. Conventional Commit PR naming, security protocols, terse responses) directly into their system prompt for all turns.
 - Keeps agent behavior aligned with repository guidelines without manual intervention.
 
+### Optimized Drug Search API N+1 Fix (June 2026)
+- Updated `GET /api/drugs` in `drugController.js` to use Mongoose `.populate()`. This returns full pharmacy details directly in the search response, eliminating the need for the frontend to fire multiple `/api/pharmacy/details` requests.
+### API Response Rename (June 2026)
+- For semantic clarity, the populated pharmacy object in the `/api/drugs` response was renamed from `pharmacy_id` to `pharmacy`.
+
 ## 🔗 Related Documentation
 
 - [.agents/AGENTS.md](file:///d:/git%20folder/PharmaNear/.agents/AGENTS.md) - Auto-loading workspace customization rules and behavior guidelines for AI agents.

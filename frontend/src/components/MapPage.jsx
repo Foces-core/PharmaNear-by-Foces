@@ -125,51 +125,43 @@ export default function MapPage() {
 
     useEffect(() => {
         if (medicineData?.stocks?.length > 0) {
-            const fetchPharmacyDetails = async () => {
-                try {
-                    const pharmacyList = await Promise.all(
-                        medicineData.stocks.map(async (item) => {
-                            try {
-                                const response = await fetch(
-                                    `${BACKEND_URL}/api/pharmacy/details?pharmacy_id=${item.pharmacy_id}`
-                                );
-                                const pharmacy = await response.json();
-                                const addressParts = [];
-                                if (pharmacy?.address) addressParts.push(pharmacy.address);
-                                if (pharmacy?.city) addressParts.push(pharmacy.city);
-                                if (pharmacy?.state) addressParts.push(pharmacy.state);
-                                if (pharmacy?.pincode) addressParts.push(pharmacy.pincode);
-                                const fullAddress = addressParts.length > 0 ? addressParts.join(', ') : "Address not available";
+            try {
+              const pharmacyList = medicineData.stocks.map((item) => {
+                const pharmacy = item.pharmacy;
 
-                                return {
-                                    id: pharmacy?._id || `unknown-${Math.random()}`,
-                                    name: pharmacy?.user_name || "Unknown Pharmacy",
-                                    address: fullAddress,
-                                    closing: pharmacy?.closing_hours || "Not specified",
-                                    phone: pharmacy?.phone_number || "Not available",
-                                    lat: pharmacy?.latitude != null ? pharmacy.latitude : userLocation.lat + Math.random() * 0.01,
-                                    lng: pharmacy?.longitude != null ? pharmacy.longitude : userLocation.lng + Math.random() * 0.01,
-                                    location_url: pharmacy?.location_url || null,
-                                    stock: item?.stock?.quantity > 0 ? "in-stock" : "out-of-stock",
-                                    price: item?.stock?.price || 0,
-                                    quantity: item?.stock?.quantity || 0,
-                                };
-                            } catch (error) {
-                                console.error("Error fetching pharmacy details:", error);
-                                return null;
-                            }
-                        })
-                    );
-
-                    const validPharmacies = pharmacyList.filter(p => p !== null);
-                    setPharmacies(validPharmacies.length ? validPharmacies : fallbackPharmacies);
-                } catch (error) {
-                    console.error("Error processing pharmacy data:", error);
-                    setPharmacies(fallbackPharmacies);
+                if(!pharmacy || typeof pharmacy === 'string') {
+                  return null
                 }
-            };
 
-            fetchPharmacyDetails();
+                const addressParts = []
+                if(pharmacy.address) addressParts.push(pharmacy.address);
+                if(pharmacy.city) addressParts.push(pharmacy.city);
+                if(pharmacy.state) addressParts.push(pharmacy.state);
+                if(pharmacy.pincode) addressParts.push(pharmacy.pincode);
+                const fullAddress = addressParts.length > 0 ? addressParts.join(', ') : "Address not available";
+                
+                return {
+                    id: pharmacy?._id || `unknown-${Math.random()}`,
+                    name: pharmacy?.user_name || "Unknown Pharmacy",
+                    address: fullAddress,
+                    closing: pharmacy?.closing_hours || "Not specified",
+                    phone: pharmacy?.phone_number || "Not available",
+                    lat: pharmacy?.latitude != null ? pharmacy.latitude : userLocation.lat + Math.random() * 0.01,
+                    lng: pharmacy?.longitude != null ? pharmacy.longitude : userLocation.lng + Math.random() * 0.01,
+                    location_url: pharmacy?.location_url || null,
+                    stock: item?.stock?.quantity > 0 ? "in-stock" : "out-of-stock",
+                    price: item?.stock?.price || 0,
+                    quantity: item?.stock?.quantity || 0,
+                };
+              });
+
+              const validPharmacies = pharmacyList.filter(p => p !== null);
+              setPharmacies(validPharmacies.length ? validPharmacies : fallbackPharmacies);
+            }
+            catch(error) {
+              console.error("Error fetching pharmacy details:", error);
+              return null
+            }
         } else {
             setPharmacies(fallbackPharmacies);
         }

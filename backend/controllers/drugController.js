@@ -1,6 +1,7 @@
 import Medicine from "../models/medicine.js";
 import Stock from "../models/stock.js";
 
+
 export const searchDrugs = async (req,res) => {
     const medicine_name = req.query.name;
     
@@ -18,8 +19,8 @@ export const searchDrugs = async (req,res) => {
       // Find all pharmacies that have the medicine
       const stocks = await Stock.find({
         "medications.medicine_id": drugs[0]._id,
-      });
-    
+      }).populate('pharmacy_id','user_name address city state pincode latitude longitude phone_number closing_hours location_url');
+      
       if (stocks.length === 0) {
         return res.json({ message: "No stock found" });
       }
@@ -30,9 +31,10 @@ export const searchDrugs = async (req,res) => {
           (m) => m.medicine_id.toString() === drugs[0]._id.toString()
         );
         return {
-          pharmacy_id: stock.pharmacy_id,
+          pharmacy: stock.pharmacy_id,
           stock: medicationEntry,
         };
       });
+      
       res.json({ drug: drugs[0], stocks: result });
 };
