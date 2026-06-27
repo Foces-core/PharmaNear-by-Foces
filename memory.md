@@ -130,6 +130,14 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - AI coding agents supporting the customizations framework will automatically parse and load the constraints defined in this file (e.g. Conventional Commit PR naming, security protocols, terse responses) directly into their system prompt for all turns.
 - Keeps agent behavior aligned with repository guidelines without manual intervention.
 
+### Authentication Token Migration to HTTP-Only Cookies (June 2026)
+- Removed JWT token storage from localStorage in LoginPage.jsx and SignupPage.jsx
+- All fetch calls in PharmacyPage.jsx and PharmacyAdmin.jsx now use `credentials: 'include'`
+- Removed manual `Authorization: Bearer` headers from all API calls
+- Added `/api/pharmacy/logout` route to clear httpOnly cookie on logout
+- `pharmacy_user_name` and `pharmacy_id` still stored in localStorage for UI display only
+- Eliminates XSS token theft vulnerability
+
 ## 🔗 Related Documentation
 
 - [.agents/AGENTS.md](file:///d:/git%20folder/PharmaNear/.agents/AGENTS.md) - Auto-loading workspace customization rules and behavior guidelines for AI agents.

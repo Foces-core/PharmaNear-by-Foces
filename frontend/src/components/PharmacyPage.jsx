@@ -29,57 +29,50 @@ export default function PharmacyPage() {
   const [error, setError] = useState("");
 
   async function handleAdd(e) {
-    e.preventDefault();
-    if (!medicineName || quantity === "" || price === "") return;
-    const newItem = {
-      id: crypto.randomUUID(),
-      name: medicineName.trim(),
-      quantity: Number(quantity),
-      price: Number(price),
-    };
+  e.preventDefault();
+  if (!medicineName || quantity === "" || price === "") return;
+  const newItem = {
+    id: crypto.randomUUID(),
+    name: medicineName.trim(),
+    quantity: Number(quantity),
+    price: Number(price),
+  };
 
-    try {
-      const token = localStorage.getItem('pharmacy_token');
-      if (!token) {
-        throw new Error('No token provided');
-      }
-      
-      const response = await fetch(`${BACKEND_URL}/api/pharmacy/stock`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          pharmacy_id: localStorage.getItem('pharmacy_id'),
-          medicine_name: newItem.name,
-          quantity: newItem.quantity,
-          price: newItem.price,
-          strength: strength
-        }),
-      })
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/pharmacy/stock`, {
+      method: 'POST',
+      credentials: 'include',              // ← cookie sent automatically
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        pharmacy_id: localStorage.getItem('pharmacy_id'),
+        medicine_name: newItem.name,
+        quantity: newItem.quantity,
+        price: newItem.price,
+        strength: strength
+      }),
+    })
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Add medicine failed');
-      }
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Add medicine failed');
+    }
 
-      await response.json()
-      setStockItems((prev) => [newItem, ...prev]);
-      setMedicineName("");
-      setQuantity("");
-      setPrice("");
-      setStrength("");
-      setError("");
-    } catch (error) {
-      setError(error.message)
-      if (error.message === 'No token provided') {
-        
-        navigate('/login');
-      }
+    await response.json()
+    setStockItems((prev) => [newItem, ...prev]);
+    setMedicineName("");
+    setQuantity("");
+    setPrice("");
+    setStrength("");
+    setError("");
+  } catch (error) {
+    setError(error.message)
+    if (error.message.includes('401') || error.message.includes('403')) {
+      navigate('/login');
     }
   }
-
+}
   function startEditing(item) {
     setEditingItem({ ...item });
   }
@@ -89,103 +82,87 @@ export default function PharmacyPage() {
   }
 
   async function saveEditing() {
-    try {
-      const token = localStorage.getItem('pharmacy_token');
-      if (!token) {
-        throw new Error('No token provided');
-      }
-      
-      const response = await fetch(`${BACKEND_URL}/api/pharmacy/stock`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          pharmacy_id: localStorage.getItem('pharmacy_id'),
-          medicine_name: editingItem.name,
-          quantity: editingItem.quantity,
-          price: editingItem.price,
-        }),
-      })
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/pharmacy/stock`, {
+      method: 'PATCH',
+      credentials: 'include',              // ← cookie sent automatically
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        pharmacy_id: localStorage.getItem('pharmacy_id'),
+        medicine_name: editingItem.name,
+        quantity: editingItem.quantity,
+        price: editingItem.price,
+      }),
+    })
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = 'Update medicine failed';
-        try {
-          const errorData = JSON.parse(errorText);
-          errorMessage = errorData.message || errorMessage;
-        } catch {
-          errorMessage = errorText || errorMessage;
-        }
-        throw new Error(errorMessage);
+    if (!response.ok) {
+      const errorText = await response.text();
+      let errorMessage = 'Update medicine failed';
+      try {
+        const errorData = JSON.parse(errorText);
+        errorMessage = errorData.message || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
       }
+      throw new Error(errorMessage);
+    }
 
-      await response.json()
-      const updatedStock = stockItems.map(item => 
-        item.name === editingItem.name ? { ...item, quantity: editingItem.quantity, price: editingItem.price } : item
-      );
-      setStockItems(updatedStock);
-      setEditingItem(null);
-      
-    } catch (error) {
-      setError(error.message)
-      if (error.message === 'No token provided') {
-      
-        navigate('/login');
-      }
+    await response.json()
+    const updatedStock = stockItems.map(item => 
+      item.name === editingItem.name ? { ...item, quantity: editingItem.quantity, price: editingItem.price } : item
+    );
+    setStockItems(updatedStock);
+    setEditingItem(null);
+    
+  } catch (error) {
+    setError(error.message)
+    if (error.message.includes('401') || error.message.includes('403')) {
+      navigate('/login');
     }
   }
+}
 
   async function deleteItem(id) {
+  try {
+    const item = stockItems.find(item => item.id === id);
+    if (!item) throw new Error('Medicine not found');
+    
+    const response = await fetch(`${BACKEND_URL}/api/pharmacy/stock`, {
+      method: 'DELETE',
+      credentials: 'include',              // ← cookie sent automatically
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        pharmacy_id: localStorage.getItem('pharmacy_id'),
+        medicine_name: item.name,
+      }),
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      let errorMessage = 'Delete medicine failed';
       try {
-        const item = stockItems.find(item => item.id === id);
-        if (!item) {
-          throw new Error('Medicine not found');
-        }
-        
-        const token = localStorage.getItem('pharmacy_token');
-        if (!token) {
-          navigate('/login');
-          return;
-        }
-        
-        const response = await fetch(`${BACKEND_URL}/api/pharmacy/stock`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            pharmacy_id: localStorage.getItem('pharmacy_id'),
-            medicine_name: item.name,
-          }),
-        })
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          let errorMessage = 'Delete medicine failed';
-          try {
-            const errorData = JSON.parse(errorText);
-            errorMessage = errorData.message || errorMessage;
-          } catch {
-            errorMessage = errorText || errorMessage;
-          }
-          throw new Error(errorMessage);
-        }
-
-        await response.json()
-        const updatedStock = stockItems.filter(item => item.id !== id);
-        setStockItems(updatedStock);
-        
-      } catch (error) {
-        setError(error.message)
-        if (error.message === 'No token provided') {
-          
-          navigate('/login');
-        }
+        const errorData = JSON.parse(errorText);
+        errorMessage = errorData.message || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
       }
+      throw new Error(errorMessage);
+    }
+
+    await response.json()
+    setStockItems(stockItems.filter(item => item.id !== id));
+    
+  } catch (error) {
+    setError(error.message)
+    if (error.message.includes('401') || error.message.includes('403')) {
+      navigate('/login');
+    }
   }
+}
 
   function totalItems() {
     return stockItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -195,106 +172,110 @@ export default function PharmacyPage() {
     navigate('/pharmacy/admin');
   }
 
-  function handleLogout() {
+  async function handleLogout() {
+  try {
+    await fetch(`${BACKEND_URL}/api/pharmacy/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+  } catch (e) {
+    console.error('Logout error:', e);
+  } finally {
     localStorage.clear();
     navigate('/login');
   }
+}
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
+  const handleResize = () => setIsMobile(window.innerWidth < 768);
+  handleResize();
+  window.addEventListener('resize', handleResize);
 
-    const userName = localStorage.getItem('pharmacy_user_name') || '';
-    const token = localStorage.getItem('pharmacy_token') || '';
-    const pharmacyId = localStorage.getItem('pharmacy_id') || '';
-    if (!userName || !token || !pharmacyId) {
-      navigate('/login');
-      return;
-    }
-    setProfile((p) => ({ ...p, user_name: userName }));
-    const controller = new AbortController();
+  const userName = localStorage.getItem('pharmacy_user_name') || '';
+  const pharmacyId = localStorage.getItem('pharmacy_id') || '';
+  if (!userName || !pharmacyId) {
+    navigate('/login');
+    return;
+  }
+  setProfile((p) => ({ ...p, user_name: userName }));
+  const controller = new AbortController();
 
-    async function fetchProfile() {
-      try {
-        const res = await fetch(`${BACKEND_URL}/api/pharmacy/profile?user_name=${encodeURIComponent(userName)}`, {
+  async function fetchProfile() {
+    try {
+      const res = await fetch(
+        `${BACKEND_URL}/api/pharmacy/profile?user_name=${encodeURIComponent(userName)}`,
+        {
           signal: controller.signal,
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        if (!res.ok) throw new Error('Failed to load profile');
-        const data = await res.json();
-        setProfile((p) => ({
-          ...p,
-          user_name: data.user_name || userName,
-          license_number: data.license_number || "",
-          address: data.address || "",
-          city: data.city || "",
-          state: data.state || "",
-          pincode: data.pincode || "",
-          latitude: data.latitude ?? "",
-          longitude: data.longitude ?? "",
+          credentials: 'include',          // ← cookie sent automatically
+        }
+      );
+      if (!res.ok) throw new Error('Failed to load profile');
+      const data = await res.json();
+      setProfile((p) => ({
+        ...p,
+        user_name: data.user_name || userName,
+        license_number: data.license_number || "",
+        address: data.address || "",
+        city: data.city || "",
+        state: data.state || "",
+        pincode: data.pincode || "",
+        latitude: data.latitude ?? "",
+        longitude: data.longitude ?? "",
+      }));
+    } catch (e) {
+      if (e.name !== 'AbortError') {
+        if (e.message.includes('401') || e.message.includes('403')) {
+          localStorage.clear();
+          navigate('/login');
+        }
+      }
+    }
+  }
+
+  async function fetchStock() {
+    try {
+      setLoading(true);
+      const res = await fetch(
+        `${BACKEND_URL}/api/pharmacy/stock?pharmacy_id=${encodeURIComponent(pharmacyId)}`,
+        {
+          method: 'GET',
+          signal: controller.signal,
+          credentials: 'include',          // ← cookie sent automatically
+        }
+      );
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Failed to load stock data');
+      }
+      const data = await res.json();
+      if (data.medications && Array.isArray(data.medications)) {
+        const formattedStockItems = data.medications.map((med, index) => ({
+          id: `med-${index}-${Date.now()}`,
+          name: med.medicine_id?.name || 'Unknown Medicine',
+          quantity: med.quantity,
+          price: med.price,
         }));
-      } catch (e) {
-        if (e.name !== 'AbortError') {
-          if (e.message.includes('401') || e.message.includes('403')) {
-            localStorage.clear();
-            navigate('/login');
-          }
+        setStockItems(formattedStockItems);
+      }
+    } catch (e) {
+      if (e.name !== 'AbortError') {
+        setError(e.message || 'Failed to load stock data');
+        if (e.message.includes('401') || e.message.includes('403')) {
+          localStorage.clear();
+          navigate('/login');
         }
       }
+    } finally {
+      setLoading(false);
     }
+  }
 
-    async function fetchStock() {
-      try {
-        setLoading(true);
-        const res = await fetch(
-          `${BACKEND_URL}/api/pharmacy/stock?pharmacy_id=${encodeURIComponent(pharmacyId)}`,
-          {
-            method: 'GET',
-            signal: controller.signal,
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || 'Failed to load stock data');
-        }
-        const data = await res.json();
-        if (data.medications && Array.isArray(data.medications)) {
-          const formattedStockItems = data.medications.map((med, index) => ({
-            id: `med-${index}-${Date.now()}`,
-            name: med.medicine_id && med.medicine_id.name ? med.medicine_id.name : 'Unknown Medicine',
-            quantity: med.quantity,
-            price: med.price,
-          }));
-          setStockItems(formattedStockItems);
-        }
-      } catch (e) {
-        if (e.name !== 'AbortError') {
-          setError(e.message || 'Failed to load stock data');
-          if (e.message.includes('401') || e.message.includes('403')) {
-            localStorage.clear();
-            navigate('/login');
-          }
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    Promise.all([fetchProfile(), fetchStock()]);
-    return () => {
-      controller.abort();
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [navigate]);
+  Promise.all([fetchProfile(), fetchStock()]);
+  return () => {
+    controller.abort();
+    window.removeEventListener('resize', handleResize);
+  };
+}, [navigate]);
 
   return (
     <div className="medicine-page">

@@ -42,125 +42,104 @@ export default function PharmacyAdmin() {
   const [saveError, setSaveError] = useState("");
 
   useEffect(() => {
+  const userName = localStorage.getItem("pharmacy_user_name") || "";
+  if (!userName) {
+    navigate('/login');
+    return;
+  }
+  setProfile((p) => ({ ...p, user_name: userName }));
+  const controller = new AbortController();
+  fetchProfile(controller.signal);
+  return () => controller.abort();
+}, [navigate]);
+
+  async function fetchProfile(signal) {
+  try {
     const userName = localStorage.getItem("pharmacy_user_name") || "";
-    const token = localStorage.getItem("pharmacy_token") || "";
-    if (!userName || !token) {
+    const res = await fetch(
+      `${BACKEND_URL}/api/pharmacy/profile?user_name=${encodeURIComponent(userName)}`,
+      {
+        signal,
+        credentials: 'include',            // ← cookie sent automatically
+      }
+    );
+    if (!res.ok) throw new Error("Failed to load profile");
+    const data = await res.json();
+    const fetchedUserName = data.user_name || userName;
+    setOriginalUserName(fetchedUserName);
+    setProfile((p) => ({
+      ...p,
+      user_name: fetchedUserName,
+      license_number: data.license_number || "",
+      address: data.address || "",
+      city: data.city || "",
+      state: data.state || "",
+      pincode: data.pincode || "",
+      latitude: data.latitude ?? "",
+      longitude: data.longitude ?? "",
+      location_url: data.location_url || "",
+    }));
+  } catch (e) {
+    if (e.name !== 'AbortError') {
+      if (e.message.includes('401') || e.message.includes('403')) {
+        localStorage.clear();
+        navigate('/login');
+      }
+    }
+  }
+}
+
+  async function saveProfile() {
+  try {
+    setSavingProfile(true);
+    setSaveError("");
+    const userNameChanged = profile.user_name !== originalUserName;
+    
+    const payload = {
+      ...profile,
+      user_name: originalUserName,
+      latitude: profile.latitude === "" ? undefined : Number(profile.latitude),
+      longitude: profile.longitude === "" ? undefined : Number(profile.longitude),
+    };
+    if (userNameChanged) {
+      payload.new_user_name = profile.user_name;
+    }
+    const res = await fetch(`${BACKEND_URL}/api/pharmacy/profile`, {
+      method: "PUT",
+      credentials: 'include',              // ← cookie sent automatically
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.message || "Failed to save");
+    }
+    const data = await res.json();
+    const updatedUserName = data.pharmacy.user_name || profile.user_name;
+    
+    if (userNameChanged) {
+      localStorage.clear();
       navigate('/login');
       return;
     }
-    setProfile((p) => ({ ...p, user_name: userName }));
-    const controller = new AbortController();
-    fetchProfile(controller.signal);
-    return () => controller.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate]);
-
-  async function fetchProfile(signal) {
-    try {
-      const userName = localStorage.getItem("pharmacy_user_name") || "";
-      const token = localStorage.getItem("pharmacy_token") || "";
-      const res = await fetch(
-        `${BACKEND_URL}/api/pharmacy/profile?user_name=${encodeURIComponent(userName)}`, {
-          signal,
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        }
-      );
-      if (!res.ok) throw new Error("Failed to load profile");
-      const data = await res.json();
-      const fetchedUserName = data.user_name || userName;
-      setOriginalUserName(fetchedUserName);
-      setProfile((p) => ({
-        ...p,
-        user_name: fetchedUserName,
-        license_number: data.license_number || "",
-        address: data.address || "",
-        city: data.city || "",
-        state: data.state || "",
-        pincode: data.pincode || "",
-        latitude: data.latitude ?? "",
-        longitude: data.longitude ?? "",
-        location_url: data.location_url || "",
-      }));
-    } catch (e) {
-      if (e.name !== 'AbortError') {
-        console.error("Failed to load profile:", e);
-        if (e.message.includes('401') || e.message.includes('403')) {
-          localStorage.clear();
-          navigate('/login');
-        }
-      }
-    }
+    
+    setOriginalUserName(updatedUserName);
+    setProfile((p) => ({
+      ...p,
+      ...data.pharmacy,
+      user_name: updatedUserName,
+      latitude: data.pharmacy.latitude ?? "",
+      longitude: data.pharmacy.longitude ?? "",
+      location_url: data.pharmacy.location_url || "",
+    }));
+    setSaveError("");
+    window.location.reload();
+  } catch (e) {
+    setSaveError(e.message || "Unable to save profile. Please try again.");
+  } finally {
+    setSavingProfile(false);
   }
-
-  async function saveProfile() {
-    try {
-      setSavingProfile(true);
-      setSaveError("");
-      const token = localStorage.getItem("pharmacy_token") || "";
-      // Track if user_name is being changed
-      const userNameChanged = profile.user_name !== originalUserName;
-      
-      const payload = {
-        ...profile,
-        // Always send the original user_name for authentication verification
-        user_name: originalUserName,
-        latitude:
-          profile.latitude === "" ? undefined : Number(profile.latitude),
-        longitude:
-          profile.longitude === "" ? undefined : Number(profile.longitude),
-      };
-      // If user_name changed, send the new name as new_user_name
-      if (userNameChanged) {
-        payload.new_user_name = profile.user_name;
-      }
-      const res = await fetch(`${BACKEND_URL}/api/pharmacy/profile`, {
-        method: "PUT",
-        headers: { 
-          "Content-Type": "application/json",
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to save");
-      }
-      const data = await res.json();
-      const updatedUserName = data.pharmacy.user_name || profile.user_name;
-      
-      // If username was changed, logout and redirect to login
-      if (userNameChanged) {
-        // Clear all local storage
-        localStorage.clear();
-        // Show a brief message before redirecting
-
-        // Navigate to login page
-        navigate('/login');
-        return;
-      }
-      
-      // If username didn't change, update state normally
-      setOriginalUserName(updatedUserName);
-      setProfile((p) => ({
-        ...p,
-        ...data.pharmacy,
-        user_name: updatedUserName,
-        latitude: data.pharmacy.latitude ?? "",
-        longitude: data.pharmacy.longitude ?? "",
-        location_url: data.pharmacy.location_url || "",
-      }));
-      console.log("Profile saved:", data);
-      setSaveError("");
-      window.location.reload();
-    } catch (e) {
-      console.error("Unable to save profile:", e);
-      setSaveError(e.message || "Unable to save profile. Please try again.");
-    } finally {
-      setSavingProfile(false);
-    }
-  }
+}
 
   function fetchCurrentLocation() {
     if (!navigator.geolocation) {
