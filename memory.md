@@ -141,6 +141,14 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - Updated `frontend/index.html` with standard `<link>` tags for these assets.
 - **Note:** The original `favicon.png` (512x512) was retained as a fallback for legacy browsers and older bookmarking systems that may still look for the default `/favicon.png` path.
 
+### Legal Documentation Enhancement (June 2026)
+
+- Replaced placeholder content in `frontend/src/components/TermsOfService.jsx` with a comprehensive Terms of Service document tailored to PharmaNear.
+- Replaced placeholder content in `frontend/src/components/PrivacyPolicy.jsx` with a detailed Privacy Policy covering data handling, user rights, and platform responsibilities.
+- Updated `frontend/src/components/InfoPage.jsx` to support rendering structured JSX content, enabling legal pages to include section headings, paragraphs, and lists instead of plain text strings.
+- Enhanced `frontend/src/components/InfoPage.css` to improve readability and presentation of legal documents through refined typography, section styling, and responsive layout adjustments.
+- These changes are limited to frontend presentation and content improvements and do not affect existing routes, APIs, or backend behavior.
+
 ## 🔗 Related Documentation
 
 - [.agents/AGENTS.md](file:///d:/git%20folder/PharmaNear/.agents/AGENTS.md) - Auto-loading workspace customization rules and behavior guidelines for AI agents.
