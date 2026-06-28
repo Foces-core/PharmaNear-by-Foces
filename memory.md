@@ -135,6 +135,13 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 ### API Response Rename (June 2026)
 - For semantic clarity, the populated pharmacy object in the `/api/drugs` response was renamed from `pharmacy_id` to `pharmacy`.
 
+### Authentication Token Migration to HTTP-Only Cookies (June 2026)
+- Removed JWT token storage from localStorage in LoginPage.jsx and SignupPage.jsx
+- All fetch calls in PharmacyPage.jsx and PharmacyAdmin.jsx now use `credentials: 'include'`
+- Removed manual `Authorization: Bearer` headers from all API calls
+- Added `/api/pharmacy/logout` route to clear httpOnly cookie on logout
+- `pharmacy_user_name` and `pharmacy_id` still stored in localStorage for UI display only
+- Eliminates XSS token theft vulnerability
 ### PWA & Favicon Configuration (June 2026)
 - Added a complete favicon kit (16x16, 32x32, 192x192, 512x512) and `apple-touch-icon.png` to `frontend/public/`.
 - Added `site.webmanifest` to enable Progressive Web App (PWA) installation and cross-browser compatibility.

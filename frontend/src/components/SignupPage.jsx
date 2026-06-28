@@ -31,6 +31,7 @@ function SignupPage() {
     try {
       const response = await fetch(`${BACKEND_URL}/api/pharmacy/signup`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -57,8 +58,8 @@ function SignupPage() {
 
       const data = await response.json()
 
+      // Token stored in httpOnly cookie by backend — no localStorage needed
       localStorage.setItem('pharmacy_user_name', data.pharmacy.user_name)
-      localStorage.setItem('pharmacy_token', data.token)
       localStorage.setItem('pharmacy_id', data.pharmacy.id)
 
       navigate('/pharmacy')

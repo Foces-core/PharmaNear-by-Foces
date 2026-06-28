@@ -261,3 +261,11 @@ try {
     res.status(500).json({ message: "Server error" });
   }
 };
+export const logout = (req, res) => {
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'strict',
+  });
+  res.json({ message: 'Logged out successfully' });
+};

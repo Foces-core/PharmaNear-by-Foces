@@ -7,6 +7,7 @@ import {
     getProfile,
     getDetails,
     updateProfile,
+    logout,
 } from '../controllers/pharmacyController.js'
 
 const router = express.Router()
@@ -22,5 +23,6 @@ router.post('/login',authLimiter,login);
 router.get('/profile',AuthMiddleware,getProfile);
 router.get('/details',getDetails);
 router.put('/profile',AuthMiddleware,updateProfile);
+router.post('/logout', logout);
 
 export default router;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useCallback } from "react";
 import { FaArrowLeft, FaMapPin } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "./PharmacyAdmin.css";
@@ -42,57 +42,65 @@ export default function PharmacyAdmin() {
   const [saveError, setSaveError] = useState("");
 
   useEffect(() => {
+  const userName = localStorage.getItem("pharmacy_user_name") || "";
+  const token = localStorage.getItem("pharmacy_token") || "";
+
+  if (!userName || !token) {
+    navigate("/login");
+    return;
+  }
+
+  setProfile((p) => ({ ...p, user_name: userName }));
+
+  const controller = new AbortController();
+  fetchProfile(controller.signal);
+
+  return () => controller.abort();
+}, [navigate, fetchProfile]);
+
+  const fetchProfile = useCallback(async (signal) => {
+  try {
     const userName = localStorage.getItem("pharmacy_user_name") || "";
     const token = localStorage.getItem("pharmacy_token") || "";
-    if (!userName || !token) {
-      navigate('/login');
-      return;
-    }
-    setProfile((p) => ({ ...p, user_name: userName }));
-    const controller = new AbortController();
-    fetchProfile(controller.signal);
-    return () => controller.abort();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate]);
 
-  async function fetchProfile(signal) {
-    try {
-      const userName = localStorage.getItem("pharmacy_user_name") || "";
-      const token = localStorage.getItem("pharmacy_token") || "";
-      const res = await fetch(
-        `${BACKEND_URL}/api/pharmacy/profile?user_name=${encodeURIComponent(userName)}`, {
-          signal,
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        }
-      );
-      if (!res.ok) throw new Error("Failed to load profile");
-      const data = await res.json();
-      const fetchedUserName = data.user_name || userName;
-      setOriginalUserName(fetchedUserName);
-      setProfile((p) => ({
-        ...p,
-        user_name: fetchedUserName,
-        license_number: data.license_number || "",
-        address: data.address || "",
-        city: data.city || "",
-        state: data.state || "",
-        pincode: data.pincode || "",
-        latitude: data.latitude ?? "",
-        longitude: data.longitude ?? "",
-        location_url: data.location_url || "",
-      }));
-    } catch (e) {
-      if (e.name !== 'AbortError') {
-        console.error("Failed to load profile:", e);
-        if (e.message.includes('401') || e.message.includes('403')) {
-          localStorage.clear();
-          navigate('/login');
-        }
+    const res = await fetch(
+      `${BACKEND_URL}/api/pharmacy/profile?user_name=${encodeURIComponent(userName)}`,
+      {
+        signal,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) throw new Error("Failed to load profile");
+
+    const data = await res.json();
+    const fetchedUserName = data.user_name || userName;
+
+    setOriginalUserName(fetchedUserName);
+    setProfile((p) => ({
+      ...p,
+      user_name: fetchedUserName,
+      license_number: data.license_number || "",
+      address: data.address || "",
+      city: data.city || "",
+      state: data.state || "",
+      pincode: data.pincode || "",
+      latitude: data.latitude ?? "",
+      longitude: data.longitude ?? "",
+      location_url: data.location_url || "",
+    }));
+  } catch (e) {
+    if (e.name !== "AbortError") {
+      console.error("Failed to load profile:", e);
+      if (e.message.includes("401") || e.message.includes("403")) {
+        localStorage.clear();
+        navigate("/login");
       }
     }
   }
+}, [navigate]);
 
   async function saveProfile() {
     try {
@@ -117,6 +125,7 @@ export default function PharmacyAdmin() {
       }
       const res = await fetch(`${BACKEND_URL}/api/pharmacy/profile`, {
         method: "PUT",
+        credentials: 'include',
         headers: { 
           "Content-Type": "application/json",
           'Authorization': `Bearer ${token}`,
@@ -378,11 +387,11 @@ export default function PharmacyAdmin() {
 
       <footer className="fm-footer">
         <div className="fm-footer-links">
-          <Link to="/about">About Us</Link>
-          <Link to="/services">Services</Link>
-          <Link to="/contact">Contact</Link>
-          <Link to="/privacy-policy">Privacy Policy</Link>
-          <Link to="/terms-of-service">Terms of Service</Link>
+          <Link to="/">About Us</Link>
+          <Link to="/">Services</Link>
+          <Link to="/">Contact</Link>
+          <Link to="/">Privacy Policy</Link>
+          <Link to="/">Terms of Service</Link>
         </div>
       </footer>
     </div>
