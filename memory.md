@@ -166,6 +166,17 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - Changed medicine lookup from loose case-insensitive regex matching to case-insensitive exact-string matching (`^...$`).
 - Prevents unintended matches (e.g. `Amoxicillin` no longer matches `Amoxicillin Test`) and mitigates Regular Expression Denial of Service (ReDoS) attacks caused by unescaped regex input.
 
+
+### Page Routing & Purpose
+- `/pharmacy` : Main Stock Management page (inline editing, operational workflow).
+- `/pharmacy/dashboard` : Analytics Dashboard (modal editing, search, stats overview).
+- `/pharmacy/admin` : Pharmacy Profile & Location settings.
+
+### Pharmacy Dashboard Implementation
+- Connected to live backend API (`/api/pharmacy/stock`).
+- Implements full CRUD: POST (Add), PATCH (Edit), DELETE (Remove).
+- **Backend Limitation:** The `Stock` model does not currently have an `expiryDate` field. Therefore, the "Expiring Soon" stat card is hardcoded to `0` until the backend schema is updated.
+
 ## 🔗 Related Documentation
 
 - [.agents/AGENTS.md](file:///d:/git%20folder/PharmaNear/.agents/AGENTS.md) - Auto-loading workspace customization rules and behavior guidelines for AI agents.
