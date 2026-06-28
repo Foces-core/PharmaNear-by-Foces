@@ -134,12 +134,15 @@ export const updateStock = async (req,res) => {
       return res.status(400).json({ message: "Invalid stock data" });
     }
 
-    const medicine = await Medicine.findOne({
-      name: { $regex: medicine_name, $options: "i" },
-    });
-    if (!medicine) {
-      return res.status(404).json({ message: "Medicine not found" });
-    }
+    // Escape special regex characters to prevent ReDoS
+    const escapedMedicineName = medicine_name.replace(
+  /[.*+?^${}()|[\]\\]/g,
+  "\\$&"
+);
+
+const medicine = await Medicine.findOne({
+  name: new RegExp(`^${escapedMedicineName}$`, "i"),
+});
 
     const stock = await Stock.findOne({
       pharmacy_id,
@@ -180,12 +183,15 @@ export const deleteStock = async (req,res) => {
           return res.status(400).json({ message: "Invalid stock data" });
         }
     
-        const medicine = await Medicine.findOne({
-          name: { $regex: medicine_name, $options: "i" },
-        });
-        if (!medicine) {
-          return res.status(404).json({ message: "Medicine not found" });
-        }
+        // Escape special regex characters to prevent ReDoS
+const escapedMedicineName = medicine_name.replace(
+  /[.*+?^${}()|[\]\\]/g,
+  "\\$&"
+);
+
+const medicine = await Medicine.findOne({
+  name: new RegExp(`^${escapedMedicineName}$`, "i"),
+});
     
         const stock = await Stock.findOne({ pharmacy_id });
         if (!stock) {

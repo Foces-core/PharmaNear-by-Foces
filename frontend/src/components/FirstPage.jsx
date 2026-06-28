@@ -16,6 +16,12 @@ function FindMedicine() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // PREFETCH PATTERN: Triggers browser to download MapPage code bundle in the background
+  // PREFETCH PATTERN: Triggers browser to download MapPage code bundle in the background
+  const handlePrefetchMap = () => {
+    import("./MapPage.jsx").catch(() => {});
+  };
+
   const getLocation = () => {
     return new Promise((resolve) => {
       if (navigator.geolocation) {
@@ -103,6 +109,7 @@ function FindMedicine() {
             placeholder="Search for medicines & health products"
             value={medicine}
             onChange={(e) => setMedicine(e.target.value)}
+            onFocus={handlePrefetchMap} // <--- Triggers optimization when user prepares to type
             className="fm-input with-icon"
           />
         </div>
@@ -128,6 +135,7 @@ function FindMedicine() {
               placeholder="Dosage/Strength"
               value={dosage}
               onChange={(e) => setDosage(e.target.value)}
+              onFocus={handlePrefetchMap} // <--- Also prefetch if they jump to dosage options first
               className="fm-input with-icon"
               style={{
                 width: "100%",

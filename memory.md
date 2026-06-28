@@ -161,8 +161,17 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - Updated `frontend/src/components/InfoPage.jsx` to support rendering structured JSX content, enabling legal pages to include section headings, paragraphs, and lists instead of plain text strings.
 - Enhanced `frontend/src/components/InfoPage.css` to improve readability and presentation of legal documents through refined typography, section styling, and responsive layout adjustments.
 - These changes are limited to frontend presentation and content improvements and do not affect existing routes, APIs, or backend behavior.
+### Secure Exact Medicine Name Matching (June 2026)
+- Updated `updateStock` and `deleteStock` in `backend/controllers/stockController.js` to escape user-supplied `medicine_name` before constructing a regular expression.
+- Changed medicine lookup from loose case-insensitive regex matching to case-insensitive exact-string matching (`^...$`).
+- Prevents unintended matches (e.g. `Amoxicillin` no longer matches `Amoxicillin Test`) and mitigates Regular Expression Denial of Service (ReDoS) attacks caused by unescaped regex input.
 
 ## 🔗 Related Documentation
 
 - [.agents/AGENTS.md](file:///d:/git%20folder/PharmaNear/.agents/AGENTS.md) - Auto-loading workspace customization rules and behavior guidelines for AI agents.
 - [README.md](file:///d:/git%20folder/PharmaNear/README.md) - Tech Stack, Getting Started guide, and folder structure.
+
+### Optimization: Frontend Code Splitting & Prefetching
+- Migrated core routes (`MapPage`, `PharmacyAdmin`, `PharmacyDashboard`) to asynchronous loading using `React.lazy()` to reduce initial bundle overhead.
+- Introduced `<Suspense>` wrapper with a full-screen loading placeholder.
+- Implemented an `onFocus` trigger on `FirstPage.jsx` inputs to selectively prefetch the heavy Leaflet bundle (`~708 kB`) in the background based on user intent.
