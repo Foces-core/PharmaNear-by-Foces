@@ -95,7 +95,7 @@ export default function PharmacyDashboard() {
   const [medicines, setMedicines] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading,setLoading] = useState(true)
+  const [,setLoading] = useState(true)
   const [editingMedicine, setEditingMedicine] = useState(null);
 
   const lowStockCount = useMemo(() => medicines.filter(m => m.quantity < LOW_STOCK_THRESHOLD).length, [medicines]);
@@ -258,7 +258,7 @@ export default function PharmacyDashboard() {
                 <td>₹{med.price.toFixed(2)}</td>
                 <td>
                   <button className="icon-btn edit" onClick={() => { setEditingMedicine(med); setIsModalOpen(true); }}><EditIcon /></button>
-                  <button className="icon-btn delete" onClick={() => setMedicines(medicines.filter(m => m.id !== med.id))}><TrashIcon /></button>
+                  <button className="icon-btn delete" onClick={() => handleDelete(med.name)}><TrashIcon /></button>
                 </td>
               </tr>
             ))}
