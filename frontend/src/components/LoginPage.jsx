@@ -43,6 +43,9 @@ function LoginPage() {
 
       const data = await response.json()
 
+      console.log('Full login response:', data);
+      console.log('Pharmacy object:', data.pharmacy);
+
       // Token stored in httpOnly cookie by backend — no localStorage needed
       localStorage.setItem('pharmacy_user_name', data.pharmacy.user_name)
       localStorage.setItem('pharmacy_id', data.pharmacy.id)

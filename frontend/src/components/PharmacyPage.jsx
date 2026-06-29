@@ -40,17 +40,11 @@ export default function PharmacyPage() {
     };
 
     try {
-      const token = localStorage.getItem('pharmacy_token');
-      if (!token) {
-        throw new Error('No token provided');
-      }
-      
       const response = await fetch(`${BACKEND_URL}/api/pharmacy/stock`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           pharmacy_id: localStorage.getItem('pharmacy_id'),
@@ -91,18 +85,12 @@ export default function PharmacyPage() {
   }
 
   async function saveEditing() {
-    try {
-      const token = localStorage.getItem('pharmacy_token');
-      if (!token) {
-        throw new Error('No token provided');
-      }
-      
+    try {      
       const response = await fetch(`${BACKEND_URL}/api/pharmacy/stock`, {
         method: 'PATCH',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           pharmacy_id: localStorage.getItem('pharmacy_id'),
@@ -147,18 +135,11 @@ export default function PharmacyPage() {
           throw new Error('Medicine not found');
         }
         
-        const token = localStorage.getItem('pharmacy_token');
-        if (!token) {
-          navigate('/login');
-          return;
-        }
-        
         const response = await fetch(`${BACKEND_URL}/api/pharmacy/stock`, {
           method: 'DELETE',
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({
             pharmacy_id: localStorage.getItem('pharmacy_id'),
@@ -212,9 +193,8 @@ export default function PharmacyPage() {
     window.addEventListener('resize', handleResize);
 
     const userName = localStorage.getItem('pharmacy_user_name') || '';
-    const token = localStorage.getItem('pharmacy_token') || '';
     const pharmacyId = localStorage.getItem('pharmacy_id') || '';
-    if (!userName || !token || !pharmacyId) {
+    if (!userName || !pharmacyId) {
       navigate('/login');
       return;
     }
@@ -227,7 +207,7 @@ export default function PharmacyPage() {
           signal: controller.signal,
           credentials: 'include',
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
         });
         if (!res.ok) throw new Error('Failed to load profile');
@@ -263,7 +243,7 @@ export default function PharmacyPage() {
             credentials: 'include',
             signal: controller.signal,
             headers: {
-              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
             },
           }
         );
@@ -316,6 +296,9 @@ export default function PharmacyPage() {
           </button>
           {isMenuOpen && (
             <div className="dropdown-menu">
+              <button onClick={() => navigate('/pharmacy/dashboard')} className="dropdown-item">
+                View Analytics Dashboard
+              </button>
               <button onClick={goToAdmin} className="dropdown-item">
                 Go to Admin Panel
               </button>

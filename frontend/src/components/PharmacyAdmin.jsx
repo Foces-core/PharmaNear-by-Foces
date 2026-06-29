@@ -42,34 +42,17 @@ export default function PharmacyAdmin() {
   const [originalUserName, setOriginalUserName] = useState("");
   const [saveError, setSaveError] = useState("");
 
-  useEffect(() => {
-  const userName = localStorage.getItem("pharmacy_user_name") || "";
-  const token = localStorage.getItem("pharmacy_token") || "";
-
-  if (!userName || !token) {
-    navigate("/login");
-    return;
-  }
-
-  setProfile((p) => ({ ...p, user_name: userName }));
-
-  const controller = new AbortController();
-  fetchProfile(controller.signal);
-
-  return () => controller.abort();
-}, [navigate, fetchProfile]);
-
   const fetchProfile = useCallback(async (signal) => {
   try {
     const userName = localStorage.getItem("pharmacy_user_name") || "";
-    const token = localStorage.getItem("pharmacy_token") || "";
 
     const res = await fetch(
       `${BACKEND_URL}/api/pharmacy/profile?user_name=${encodeURIComponent(userName)}`,
       {
         signal,
+        credentials:'include',
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       }
     );
@@ -102,12 +85,28 @@ export default function PharmacyAdmin() {
     }
   }
 }, [navigate]);
+  useEffect(() => {
+  const userName = localStorage.getItem("pharmacy_user_name") || "";
+
+  if (!userName) {
+    navigate("/login");
+    return;
+  }
+
+  setProfile((p) => ({ ...p, user_name: userName }));
+
+  const controller = new AbortController();
+  fetchProfile(controller.signal);
+
+  return () => controller.abort();
+}, [navigate, fetchProfile]);
+
+  
 
   async function saveProfile() {
     try {
       setSavingProfile(true);
       setSaveError("");
-      const token = localStorage.getItem("pharmacy_token") || "";
       // Track if user_name is being changed
       const userNameChanged = profile.user_name !== originalUserName;
       
@@ -129,7 +128,6 @@ export default function PharmacyAdmin() {
         credentials: 'include',
         headers: { 
           "Content-Type": "application/json",
-          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
