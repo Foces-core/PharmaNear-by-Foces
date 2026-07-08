@@ -1,6 +1,6 @@
 # Project Memory & Context
 
-This document records all important architectural decisions and their reasoning for future developers and AI agents.
+This document records all important architectural decisions and their reasoning for future developers.
 
 ## 📖 Overview
 
