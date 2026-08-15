@@ -4,21 +4,47 @@ permissions:
   contents: write
   pull-requests: write
   checks: read
+  statuses: read
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     steps:
       - uses: dependabot/fetch-metadata@v2
         id: metadata
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Wait for CI checks
-        run: gh pr checks "$PR_URL" --watch --interval 20 --fail-fast
+      - name: Wait for CI and Vercel checks
+        uses: actions/github-script@v7
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const sha = process.env.PR_HEAD_SHA;
+            for (let i = 0; i < 90; i++) {
+              const { data: checks } = await github.rest.checks.listForRef({ owner, repo, ref: sha });
+              const { data: status } = await github.rest.repos.getCombinedStatusForRef({ owner, repo, ref: sha });
+              const runs = checks.check_runs.filter(r => r.name !== 'auto-merge');
+              const statuses = status.statuses || [];
+              const allRunsDone = runs.every(r => r.status === 'completed');
+              const allStatusesDone = statuses.every(s => s.state !== 'pending');
+              const hasAnything = runs.length > 0 || statuses.length > 0;
+              if (hasAnything && allRunsDone && allStatusesDone) {
+                const failed = runs.filter(r => !['success', 'neutral', 'skipped'].includes(r.conclusion));
+                const failedStatuses = statuses.filter(s => s.state === 'error' || s.state === 'failure');
+                if (failed.length || failedStatuses.length) {
+                  throw new Error('Checks failed: ' +
+                    [...failed.map(f => `${f.name}: ${f.conclusion}`),
+                     ...failedStatuses.map(s => `${s.context}: ${s.state}`)].join(', '));
+                }
+                console.log('All checks passed: ' + runs.map(r => r.name).join(', '));
+                return;
+              }
+              await new Promise(r => setTimeout(r, 20000));
+            }
+            throw new Error('Timed out waiting for checks');
       - name: Approve and auto-merge (non-major updates)
         if: steps.metadata.outputs.update-type != 'version-update:semver-major'
         run: |
