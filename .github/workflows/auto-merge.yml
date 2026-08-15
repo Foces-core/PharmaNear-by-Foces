@@ -45,9 +45,9 @@ jobs:
               await new Promise(r => setTimeout(r, 20000));
             }
             throw new Error('Timed out waiting for checks');
-      - name: Enable auto-merge (non-major updates)
+      - name: Merge (non-major updates)
         if: steps.metadata.outputs.update-type != 'version-update:semver-major'
-        run: gh pr merge --auto --squash --delete-branch "$PR_URL"
+        run: gh pr merge --squash --delete-branch "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
