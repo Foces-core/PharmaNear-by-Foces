@@ -1,6 +1,7 @@
 {
   "name": "pharmanear-root",
   "private": true,
+  "packageManager": "pnpm@11.21.0",
   "engines": {
     "npm": "please-use-pnpm-instead",
     "pnpm": ">=8"
