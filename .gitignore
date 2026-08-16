@@ -18,5 +18,8 @@ node_modules
 # Build output
 frontend/dist/
 
+# Linked worktrees
+wt-*/
+
 # MongoDB memory server cache
 .cache/mongodb-binaries/
