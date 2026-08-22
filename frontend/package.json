@@ -32,7 +32,7 @@
     "globals": "^17.11.0",
     "jsdom": "^29.1.1",
     "vite": "^7.0.4",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.11"
   },
   "description": "PharmaNear is a web platform that helps users locate nearby pharmacies, medicines, and healthcare services.",
   "main": "eslint.config.js",
