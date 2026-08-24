@@ -1,19 +1,28 @@
-# Depot CI Migration
-# Source: .github\workflows\ci.yml
-#
-# Changes made:
-# - Changed GitHub runs-on labels to their Depot equivalents
-
+# Depot CI — egress filtering enabled for privacy
 name: CI
 on:
   push:
     branches: [main, master, dev]
   pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions: {}
 jobs:
   test:
-    runs-on: depot-ubuntu-24.04 # was: ubuntu-latest. Mapped standard GitHub runner to Depot equivalent.
+    runs-on: depot-ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v7
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            registry.npmjs.org:443 registry.npmjs.org.:443 nodejs.org:443
+            api.github.com:443 github.com:443 objects.githubusercontent.com:443
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
         with:
