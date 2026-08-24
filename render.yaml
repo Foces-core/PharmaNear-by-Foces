@@ -9,7 +9,7 @@ services:
     startCommand: pnpm start
     envVars:
       - key: NODE_VERSION
-        value: 20
+        value: 22
       - key: MONGO_URL
         sync: false # Requires manual entry of the database connection string in Render Dashboard
       - key: JWT_SECRET
