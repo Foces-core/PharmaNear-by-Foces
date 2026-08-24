@@ -26,7 +26,7 @@ services:
     staticPublishPath: dist
     envVars:
       - key: NODE_VERSION
-        value: 20
+        value: 22
       # Set this to your backend URL (without trailing slash) in the Render dashboard
       - key: VITE_BACKEND_URL
         sync: false
