@@ -48,8 +48,8 @@ importers:
         specifier: ^10.8.1
         version: 10.8.1(supports-color@8.1.1)
       globals:
-        specifier: ^16.5.0
-        version: 16.5.0
+        specifier: ^17.11.0
+        version: 17.11.0
       jest:
         specifier: ^30.4.2
         version: 30.4.2(@types/node@26.2.0)(supports-color@8.1.1)
@@ -1206,8 +1206,8 @@ packages:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
     deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
-  globals@16.5.0:
-    resolution: {integrity: sha512-c/c15i26VrJ4IRt5Z89DnIzCGDn9EcebibhAOjw5ibqEHsE1wLUgkPn9RDmNcUKyU87GeaL633nyJ+pplFR2ZQ==}
+  globals@17.11.0:
+    resolution: {integrity: sha512-Z2I8hM+PbJDXQDq3Icgpzv+mPdwr68iZUU9d5WW4FuXfDUQfkZaZuvjMv42/5crNyw154+9+VWXbYrUgDXbxNw==}
     engines: {node: '>=18'}
 
   gopd@1.2.0:
@@ -3397,7 +3397,7 @@ snapshots:
       once: 1.4.0
       path-is-absolute: 1.0.1
 
-  globals@16.5.0: {}
+  globals@17.11.0: {}
 
   gopd@1.2.0: {}
 
