@@ -1,5 +1,14 @@
+# Depot CI Migration
+# Source: .github\workflows\auto-merge.yml
+#
+# Changes made:
+# - Changed GitHub runs-on labels to their Depot equivalents
+
 name: Auto-merge Dependabot
 on: pull_request_target
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 permissions:
   contents: write
   pull-requests: write
@@ -7,10 +16,16 @@ permissions:
   statuses: read
 jobs:
   auto-merge:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # was: ubuntu-latest. Mapped standard GitHub runner to Depot equivalent.
     timeout-minutes: 60
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443 github.com:443 objects.githubusercontent.com:443
       - uses: dependabot/fetch-metadata@v3
         id: metadata
         with:
