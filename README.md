@@ -292,12 +292,10 @@ This project is licensed under the AGPL-3.0 License. See the [LICENSE](LICENSE) 
 > * *Why?* Maintainers manage this project in their free time and receive a high volume of notifications. Unnecessary pings lead to notification fatigue. Rest assured, all issues and PRs are reviewed regularly. Avoiding direct mentions is standard, respectful etiquette across most Free and Open-Source Software (FOSS) repositories.
 
 - **Sebin Mathew**
-  - 📧 Email: Sebinmathew543@gmail.com
   - 💼 LinkedIn: https://www.linkedin.com/in/sebin-gg
   - 🐙 GitHub: https://github.com/sebin-gg
 
 - **Lisha Jins**
-  - 📧 Email: lishajins2006@gmail.com
   - 💼 LinkedIn: https://www.linkedin.com/in/lisha-jins
   - 🐙 GitHub: https://github.com/Lishajins
 
