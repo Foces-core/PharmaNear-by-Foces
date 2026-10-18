@@ -194,3 +194,7 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 ### Backend dependency install permissions (October 2026)
 - Explicitly allow pnpm to run the @parcel/watcher install script, required by the current Jest dependency graph and previously blocking CI installation.
 - This changes dependency installation policy only; application behavior and architecture are unchanged.
+
+### Transitive dependency security overrides (October 2026)
+- Raised vulnerable transitive packages to patched releases through version-scoped package-manager overrides, preserving dependencies that require other major versions.
+- No application behavior or architecture changed. `sprintf-js` remains at 1.0.3 because no patched release is available; keep its Dependabot alert visible and reassess when upstream publishes a fix.
