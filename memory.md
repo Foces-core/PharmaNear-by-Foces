@@ -187,7 +187,10 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - Introduced `<Suspense>` wrapper with a full-screen loading placeholder.
 - Implemented an `onFocus` trigger on `FirstPage.jsx` inputs to selectively prefetch the heavy Leaflet bundle (`~708 kB`) in the background based on user intent.
 
-
 ### Frontend test dependency update (October 2026)
 - Updated @testing-library/react from 16.3.2 to 16.3.3.
 - No application behavior or architecture changed.
+
+### Backend dependency install permissions (October 2026)
+- Explicitly allow pnpm to run the @parcel/watcher install script, required by the current Jest dependency graph and previously blocking CI installation.
+- This changes dependency installation policy only; application behavior and architecture are unchanged.

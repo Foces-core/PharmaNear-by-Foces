@@ -9,4 +9,5 @@ overrides:
 allowBuilds:
   bcrypt: true
   mongodb-memory-server: true
+  '@parcel/watcher': true
   unrs-resolver: true
