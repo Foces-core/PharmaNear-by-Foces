@@ -186,3 +186,8 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - Migrated core routes (`MapPage`, `PharmacyAdmin`, `PharmacyDashboard`) to asynchronous loading using `React.lazy()` to reduce initial bundle overhead.
 - Introduced `<Suspense>` wrapper with a full-screen loading placeholder.
 - Implemented an `onFocus` trigger on `FirstPage.jsx` inputs to selectively prefetch the heavy Leaflet bundle (`~708 kB`) in the background based on user intent.
+
+
+### Frontend test dependency update (October 2026)
+- Updated @testing-library/react from 16.3.2 to 16.3.3.
+- No application behavior or architecture changed.
