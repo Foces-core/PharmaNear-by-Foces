@@ -207,3 +207,7 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 - Require the current `test` check in the main ruleset; older `test (20.x)` and `test (22.x)` names no longer match the single CI job.
 - Audit backend and frontend lockfiles for high-severity issues. Upgrade `follow-redirects` to 1.16.1, `body-parser` to 2.4.0, Vite to 8.2.4 and Vitest to 4.1.12.
 - The repository has no PHP runtime or PHP configuration. The `session.upload_progress` mitigation does not apply to this application.
+
+### follow-redirects audit fix (November 2026)
+- `follow-redirects` 1.16.1 (raised in #121) is itself vulnerable (GHSA-mrwp-f3q8-3g9p, patched >=1.16.2); added a version-scoped override in `backend/pnpm-workspace.yaml` resolving it to 1.16.2.
+- Keeps the `--audit-level=high` gate introduced in #121 green on `main`. No application behavior or architecture changed.
