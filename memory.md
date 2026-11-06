@@ -197,4 +197,13 @@ Connects patients with nearby pharmacies to check medication stock. Features use
 
 ### Transitive dependency security overrides (October 2026)
 - Raised vulnerable transitive packages to patched releases through version-scoped package-manager overrides, preserving dependencies that require other major versions.
-- No application behavior or architecture changed. `sprintf-js` remains at 1.0.3 because no patched release is available; keep its Dependabot alert visible and reassess when upstream publishes a fix.
+- No application behavior or architecture changed. The `sprintf-js` advisory was later withdrawn; its alert is dismissed as inaccurate rather than treated as an active vulnerability.
+
+### CI trust and dependency maintenance (October 2026)
+- Keep GitHub Actions on the maintained Node.js 22.x line so `setup-node` receives the latest 22.x security release, including the October 2026 eMudhra CA update.
+- Until GitHub-hosted Ubuntu images include the eMudhra CA distrust update, refresh Ubuntu 24.04 `ca-certificates` before checkout and fail if the fixed package version is unavailable.
+- Pin every action used by repository workflows to a commit SHA, with its release tag in a comment for Dependabot.
+- Allow only the six actions used by repository workflows. Set workflow-token defaults to read-only; workflows that assign issues or queue Dependabot merges declare their write permissions explicitly.
+- Require the current `test` check in the main ruleset; older `test (20.x)` and `test (22.x)` names no longer match the single CI job.
+- Audit backend and frontend lockfiles for high-severity issues. Upgrade `follow-redirects` to 1.16.1, `body-parser` to 2.4.0, Vite to 8.2.4 and Vitest to 4.1.12.
+- The repository has no PHP runtime or PHP configuration. The `session.upload_progress` mitigation does not apply to this application.

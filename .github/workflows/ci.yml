@@ -4,19 +4,43 @@ on:
     branches: [main, master, dev]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
+      # Ubuntu runner images are rolling out a CA-store fix for the eMudhra incident.
+      - name: Refresh system CA certificates
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --only-upgrade ca-certificates
+          required_version='20260816ubuntu0.24.04.1'
+          installed_version="$(dpkg-query -W -f='${Version}' ca-certificates)"
+          dpkg --compare-versions "$installed_version" ge "$required_version" || {
+            echo "::error::ca-certificates $installed_version is older than the eMudhra fix $required_version"
+            exit 1
+          }
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          node-version: 22
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: 11.21.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 22.x
       - run: pnpm install --frozen-lockfile
       - run: pnpm install --frozen-lockfile
         working-directory: backend
       - run: pnpm install --frozen-lockfile
         working-directory: frontend
       - run: pnpm test
-      - run: pnpm audit --audit-level=critical
+      - name: Audit backend dependencies
+        run: pnpm audit --audit-level=high
+        working-directory: backend
+      - name: Audit frontend dependencies
+        run: pnpm audit --audit-level=high
+        working-directory: frontend

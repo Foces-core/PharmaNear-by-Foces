@@ -1,9 +1,3 @@
-# Depot CI Migration
-# Source: .github\workflows\auto-merge.yml
-#
-# Changes made:
-# - Changed GitHub runs-on labels to their Depot equivalents
-
 name: Auto-merge Dependabot
 on: pull_request_target
 concurrency:
@@ -16,7 +10,7 @@ permissions:
   statuses: read
 jobs:
   auto-merge:
-    runs-on: ubuntu-latest # was: ubuntu-latest. Mapped standard GitHub runner to Depot equivalent.
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     steps:
@@ -26,12 +20,12 @@ jobs:
           egress-policy: block
           allowed-endpoints: >
             api.github.com:443 github.com:443 objects.githubusercontent.com:443
-      - uses: dependabot/fetch-metadata@v3
+      - uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3
         id: metadata
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Wait for CI and Vercel checks
-        uses: actions/github-script@v9
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         env:
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         with:
@@ -62,7 +56,7 @@ jobs:
             throw new Error('Timed out waiting for checks');
       - name: Merge (non-major updates)
         if: steps.metadata.outputs.update-type != 'version-update:semver-major'
-        run: gh pr merge --squash --delete-branch "$PR_URL"
+        run: gh pr merge --auto --squash --delete-branch "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
